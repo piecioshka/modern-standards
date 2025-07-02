@@ -101,6 +101,12 @@ Kroki:
 - Wykorzystać narzędzia:
   - ajv, aby zbudować schemę oczekiwanej odpowiedzi
 
+### [Codebase] Jedno miejsce ze wszystkimi typami customowych błędów
+
+- Zdefiniować wszystkie błędy w jednym miejscu, aby nie były rozproszone
+  po całej aplikacji
+- Przykład: `src/errors/index.ts`
+
 ---
 
 ## 3. jednoczesne requesty
