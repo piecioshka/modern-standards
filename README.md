@@ -113,52 +113,59 @@ Kroki:
 
 - zdefiniowanie liczby jednoczesnych zapytań
 
-## ponawianie zapytania HTTP
+## [Frontend] Ponawianie zapytania HTTP
 
-## cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)
+## [Frontend] Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)
 
-## Ścieżka krytyczna ładowania aplikacji
+## [Frontend] Ścieżka krytyczna ładowania aplikacji
 
-## lokalne zasoby
+## [Backend] lokalne zasoby
 
-- zmienić adresy na lokalne, aby nie wychodziły po serwerownie
+- zmienić adresy na lokalne, aby nie wychodziły poza serwerownie
 - zmienić protokół na HTTP, aby nie szyfrować lokalnych requestów
 
-## optymalizacja komponentów
+## [Frontend] Optymalizacja komponentów
 
 - nie ładowanie wszystkiego, tylko to, co jest widoczne np. obrazki, listy
   - [Tech] Intersection Observer API
 - przerywać zapytania HTTP jeśli już nie są potrzebne dla komponentu
   - [Tech] AbortController
 
-## loader
+## [Frontend] Loader
 
-## przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA
+## [Frontend] Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA
 
-## zbieranie logów
+## [Frontend] Zbieranie logów
 
-## SSR
+## [Frontend] SSR
 
-## przetestować cofanie deployu aplikacji - tzw. rollback
+## [Infrastructure] Przetestować cofanie deployu aplikacji - tzw. rollback
 
-- Bootstrap process
-  - main()
-- Log management
-  - npm/debug
-- Release process
-  - npm/release-it
-- Modules
-  - ES2015 / AMD / CommonJS
-  - npm/webpack
-- Configuration
-  - config.js
-- Component Events
-  - npm/super-event-emitter
-- Tests
-  - units / integrations / system
-  - end-to-end
+## [Tech] Bootstrap process
 
----
+- posiadanie jednej funkcji, która startuje aplikację:
+- [Tech] `main()`
+
+## [Backend] Log management
+
+- Wykorzystać paczkę `npm/debug`
+
+## [Infrastructure] Release process
+
+- Wykorzystać dowolne narzędzie do publikacji aplikacji np. `npm/release-it`
+
+## [Tech] Modules
+
+- ES2015 / AMD / CommonJS
+- npm/webpack
+
+## Configuration
+
+- Posiadanie jednego miejsca z konfiguracją `config.js`
+
+## Component Events
+
+- Komunikacja między komponentami `npm/super-event-emitter`
 
 ## GitHub
 
@@ -196,8 +203,6 @@ plugins:
   - https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports
 - rule: import/no-relative-parent-imports
 - rule: consistent-type-imports
-- [notes](../___SECRET___/yt/videos/???-elint-plugin-todo-with-label.md)
-- [notes](../@dev/ideas/???-my-productive-eslint-plugins.md)
 
 ## Other tools
 
@@ -236,7 +241,7 @@ plugins:
 ## Pipelines
 
 - UI Error Collector of runtime errors
-- Observability on BE
+- Observability
   - Logs
   - Metrics
   - Traces
@@ -244,4 +249,4 @@ plugins:
 ## Bonus Services
 
 - Sourcegraph
-- SonarQube - https://sonarqube.dev.box.net/profiles
+- SonarQube
