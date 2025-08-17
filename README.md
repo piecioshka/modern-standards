@@ -195,14 +195,49 @@ Kroki:
   }
   ```
 
-## ESLint
+## ESLint ([playground](https://eslint.org/play/))
+
+- import/no-relative-parent-imports
+- `no-unsafe-optional-chaining: 'error'`
+- `prefer-arrow-callback: 'error'`
+- import/no-extraneous-dependencies
 
 plugins:
 
-- @typescript-eslint/consistent-type-imports
+- [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
+- [eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)
+  ```js
+  'import/order': [
+    'error',
+    {
+      groups: [
+        'builtin',
+        'external',
+        'internal',
+        'unknown',
+        'parent',
+        'sibling',
+        'index',
+        'object',
+        'type',
+      ],
+      'newlines-between': 'always',
+    },
+  ],
+  ```
+- [eslint-plugin-no-relative-import-paths](https://github.com/MelvinVermeer/eslint-plugin-no-relative-import-paths)
+- [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react)
+- [eslint-plugin-regexp](https://github.com/ota-meshi/eslint-plugin-regexp)
+- [eslint-plugin-smells](https://github.com/elijahmanor/eslint-plugin-smells)
+- [eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
+- [eslint-plugin-unused-imports](https://github.com/sweepline/eslint-plugin-unused-imports)
+
+TypeScript plugins:
+
+- [@typescript-eslint/no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises/)
+- [@typescript-eslint/no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
+- [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
   - https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports
-- rule: import/no-relative-parent-imports
-- rule: consistent-type-imports
 
 ## Other tools
 
