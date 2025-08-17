@@ -234,6 +234,8 @@ plugins:
 
 TypeScript plugins:
 
+- [@typescript-eslint/array-type](https://typescript-eslint.io/rules/array-type/)
+- [@typescript-eslint/explicit-member-accessibility](https://typescript-eslint.io/rules/explicit-member-accessibility/)
 - [@typescript-eslint/no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises/)
 - [@typescript-eslint/no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
 - [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
