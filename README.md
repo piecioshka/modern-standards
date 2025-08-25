@@ -20,9 +20,9 @@ wersją samej siebie.
 <!-- toc -->
 
 - [Tools](#tools)
-- [Husky](#husky)
-- [Lint-staged](#lint-staged)
-- [Prettier](#prettier)
+  * [Husky](#husky)
+  * [Lint-staged](#lint-staged)
+  * [Prettier](#prettier)
   * [TypeScript](#typescript)
   * [ESLint](#eslint)
   * [Utilities](#utilities)
@@ -74,17 +74,17 @@ wersją samej siebie.
 
 ## Tools
 
-## Husky
+### Husky
 
-- https://typicode.github.io/husky/
+- <https://typicode.github.io/husky/>
 
-## Lint-staged
+### Lint-staged
 
-- https://github.com/okonet/lint-staged
+- <https://github.com/okonet/lint-staged>
 
-## Prettier
+### Prettier
 
-- https://prettier.io/
+- <https://prettier.io/>
 
 ### TypeScript
 
@@ -197,8 +197,8 @@ TypeScript plugins:
 
 ### Changelog
 
-- https://github.com/piecioshka/changelog-all-possibilities
-- https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html
+- [changelog-all-possibilities](https://github.com/piecioshka/changelog-all-possibilities)
+- [🇵🇱 Blogpost: husky-commitlint-git-changelog](https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html)
 
 ---
 
@@ -213,8 +213,8 @@ Zweryfikować:
 💡 TIP:
 
 - Wykorzystać narzędzia:
-  - https://www.npmjs.com/package/sanitize-html
-  - https://www.npmjs.com/package/escape-html
+  - [sanitize-html](https://www.npmjs.com/package/sanitize-html)
+  - [escape-html](https://www.npmjs.com/package/escape-html)
 
 ### Strona z błędem
 
@@ -411,16 +411,16 @@ Verify:
 
 ### Sourcegraph
 
-- https://sourcegraph.com/search
+- <https://sourcegraph.com/search>
 
 ### SonarQube
 
-- https://www.sonarsource.com/products/sonarqube/
+- <https://www.sonarsource.com/products/sonarqube/>
 
 ### GitHub
 
 - Template for PR - `.github/PULL_REQUEST_TEMPLATE.md`
-  - https://github.com/devspace/awesome-github-templates#rocket-templates-for-pull-requests
+  - <https://github.com/devspace/awesome-github-templates#rocket-templates-for-pull-requests>
 - Template for issues - `.github/ISSUE_TEMPLATE.md`
-  - https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues
+  - <https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues>
 - Contributing rules - `.github/CONTRIBUTING.md`
