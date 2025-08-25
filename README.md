@@ -11,180 +11,15 @@ Myślę, że ten poradnik tyczy się również aplikacji, które już są dostę
 dla użytkowników, a którym to brakuje trochę, aby być jeszcze solidniejszą
 wersją samej siebie.
 
-## 1. Testy
-
-### 1.1. Testy obsługi braku połączenia z internetem
-
-Kroki:
-
-- Wyłączyć internet na maszynie, gdzie jest uruchomiona aplikacja
-
-[i] Zweryfikować:
-
-- Czy nie robimy niepotrzebnych zapytań HTTP?
-- Czy wyświetlamy komunikat o braku połączenia internetowego?
-
-[✅] Wskazówki:
-
-- Sprawdzenie połączenie z internetem można wykonać za pomocą `navigator.onLine`
-
-### 1.2. Testy wydajnościowe
-
-[i] Zweryfikować:
-
-- W jakim czasie "obsłużymy" 100k użytkowników?
-- Ile użytkowników jesteśmy w stanie obsłużyć w ciągu jednej sekundy?
-
-[✅] Wskazówki:
-
-- Wykorzystać narzędzia:
-  - Apache Benchmark
-  - Artillery
-  - Locust
-
 ---
 
-## 2. Error Handling
+## Tools
 
-### 2.1. Dane pochodzące od użytkownika
+- [Husky](https://typicode.github.io/husky/#/)
+- [Lint-staged](https://github.com/okonet/lint-staged)
+- [Prettier](https://prettier.io/)
 
-[i] Zweryfikować:
-
-- Czy wszystko to co wpisał użytkownik do dowolnego pola formularza jest sanityzowane?
-
-[✅] Wskazówki:
-
-- Wykorzystać narzędzia:
-  - https://www.npmjs.com/package/sanitize-html
-  - https://www.npmjs.com/package/escape-html
-
-### 2.2. Strona z błędem
-
-[i] Zweryfikować:
-
-- Czy jest zbudowana specjalna strona na błędy?
-- Czy przekierowujemy użytkownika na stronę z błędem kiedy nie ma dostępu
-  do wyświetlanego zasobu? Przykłady:
-  - nie istnieje już dana strona,
-  - albo użytkownik chce przejść do strony dla zalogowanych będąc niezalogowanym
-
-### 2.3. Błędy HTTP: Zgodnie z naturą REST
-
-[i] Zweryfikować:
-
-- Czy obsługujemy problem z pozyskaniem odpowiedzi z uwagi na błąd HTTP?
-  - np. gdy wystąpi `HTTP Status 500 - Internal Server Error`
-
-### 2.5. Błędy HTTP: Zdefiniowane przez back-end
-
-[i] Zweryfikować:
-
-- Czy obsługujemy customowe błędy zdefiniowane w części serwerowej?
-  - np. w nie jest znaleziony zasób i w odpowiedzi otrzymujemy JSONa
-    z kluczem `error` oraz kodem błędu
-
-[✅] Wskazówki:
-
-- Pozyskać wszystkie kody błędów jakie są zdefiniowane po stronie serwera
-  aplikacji klienckiej, którą rozwijamy
-
-### 2.6. Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_
-
-[i] Zweryfikować:
-
-- Czy odpowiedź jest w poprawnym formacie
-
-[✅] Wskazówki:
-
-- Wykorzystać Output Schemę lub kontrakt Swagerowy, w którym to zdefiniowany
-  jest format oczekiwanej odpowiedzi
-- Wykorzystać narzędzia:
-  - ajv, aby zbudować schemę oczekiwanej odpowiedzi
-
-### [Codebase] Jedno miejsce ze wszystkimi typami customowych błędów
-
-- Zdefiniować wszystkie błędy w jednym miejscu, aby nie były rozproszone
-  po całej aplikacji
-- Przykład: `src/errors/index.ts`
-
----
-
-## 3. jednoczesne requesty
-
-- zdefiniowanie liczby jednoczesnych zapytań
-
-## [Frontend] Ponawianie zapytania HTTP
-
-## [Frontend] Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)
-
-## [Frontend] Ścieżka krytyczna ładowania aplikacji
-
-## [Backend] lokalne zasoby
-
-- zmienić adresy na lokalne, aby nie wychodziły poza serwerownie
-- zmienić protokół na HTTP, aby nie szyfrować lokalnych requestów
-
-## [Frontend] Optymalizacja komponentów
-
-- nie ładowanie wszystkiego, tylko to, co jest widoczne np. obrazki, listy
-  - [Tech] Intersection Observer API
-- przerywać zapytania HTTP jeśli już nie są potrzebne dla komponentu
-  - [Tech] AbortController
-
-## [Frontend] Loader
-
-## [Frontend] Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA
-
-## [Frontend] Zbieranie logów
-
-## [Frontend] SSR
-
-## [Infrastructure] Przetestować cofanie deployu aplikacji - tzw. rollback
-
-## [Tech] Bootstrap process
-
-- Having one function that starts the application eg. `main()`
-
-## [Backend] Log management
-
-- Use the tool `npm/debug`
-
-## [Infrastructure] Release process
-
-- Use any tool for application deployment, e.g. `npm/release-it`
-
-## [Tech] Modules
-
-- ES2015 / AMD / CommonJS
-- npm/webpack
-
-## Configuration
-
-- https://12factor.net/pl/config
-  - Having one place with configuration `config.js`
-
-## Component Events
-
-- Communication between components `npm/super-event-emitter`
-
-## GitHub
-
-- Template for PR - `.github/PULL_REQUEST_TEMPLATE.md`
-  - https://github.com/devspace/awesome-github-templates#rocket-templates-for-pull-requests
-- Template for issues - `.github/ISSUE_TEMPLATE.md`
-  - https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues
-- Contributing rules - `.github/CONTRIBUTING.md`
-
-## UI
-
-- [React](https://reactjs.org/)
-- [Storybook](https://storybook.js.org/)
-
-### Forms
-
-- [Formik](https://formik.org/)
-
-## TypeScript
+### TypeScript
 
 - Enable "Strict Mode" in `tsconfig.json`
 
@@ -196,7 +31,7 @@ Kroki:
   }
   ```
 
-## ESLint ([playground](https://eslint.org/play/))
+### ESLint ([playground](https://eslint.org/play/))
 
 ```js
 'no-unsafe-optional-chaining': 'error',
@@ -281,23 +116,162 @@ TypeScript plugins:
 - [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
   - https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports
 
-## Other tools
 
-- [Husky](https://typicode.github.io/husky/#/)
-- [Lint-staged](https://github.com/okonet/lint-staged)
-- [Prettier](https://prettier.io/)
-
-## Utilities
+### Utilities
 
 - [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
 
-## HTTP Request
+### HTTP Request
 
 - [react-query](https://react-query.tanstack.com/)
 - [Apollo GraphQL](https://www.apollographql.com/)
 - [Axios](https://axios-http.com/) ❌
 
-## Tests
+### Changelog
+
+- https://github.com/piecioshka/changelog-all-possibilities
+- https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html
+
+---
+
+## Error Handling
+
+### Dane pochodzące od użytkownika
+
+[i] Zweryfikować:
+
+- Czy wszystko to co wpisał użytkownik do dowolnego pola formularza jest sanityzowane?
+
+[✅] Wskazówki:
+
+- Wykorzystać narzędzia:
+  - https://www.npmjs.com/package/sanitize-html
+  - https://www.npmjs.com/package/escape-html
+
+### Strona z błędem
+
+[i] Zweryfikować:
+
+- Czy jest zbudowana specjalna strona na błędy?
+- Czy przekierowujemy użytkownika na stronę z błędem kiedy nie ma dostępu
+  do wyświetlanego zasobu? Przykłady:
+  - nie istnieje już dana strona,
+  - albo użytkownik chce przejść do strony dla zalogowanych będąc niezalogowanym
+
+### Błędy HTTP: Zgodnie z naturą REST
+
+[i] Zweryfikować:
+
+- Czy obsługujemy problem z pozyskaniem odpowiedzi z uwagi na błąd HTTP?
+  - np. gdy wystąpi `HTTP Status 500 - Internal Server Error`
+
+### Błędy HTTP: Zdefiniowane przez back-end
+
+[i] Zweryfikować:
+
+- Czy obsługujemy customowe błędy zdefiniowane w części serwerowej?
+  - np. w nie jest znaleziony zasób i w odpowiedzi otrzymujemy JSONa
+    z kluczem `error` oraz kodem błędu
+
+[✅] Wskazówki:
+
+- Pozyskać wszystkie kody błędów jakie są zdefiniowane po stronie serwera
+  aplikacji klienckiej, którą rozwijamy
+
+### Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_
+
+[i] Zweryfikować:
+
+- Czy odpowiedź jest w poprawnym formacie
+
+[✅] Wskazówki:
+
+- Wykorzystać Output Schemę lub kontrakt Swagerowy, w którym to zdefiniowany
+  jest format oczekiwanej odpowiedzi
+- Wykorzystać narzędzia:
+  - ajv, aby zbudować schemę oczekiwanej odpowiedzi
+
+---
+
+## Backend
+
+### Lokalne zasoby
+
+- zmienić adresy na lokalne, aby nie wychodziły poza serwerownie
+- zmienić protokół na HTTP, aby nie szyfrować lokalnych requestów
+
+### Log management (Zbieranie logów)
+
+- Use the tool `npm/debug`
+
+### SSR (Server-Side Rendering)
+
+---
+
+## Frontend (UI)
+
+- [React](https://reactjs.org/)
+- [Storybook](https://storybook.js.org/)
+
+### Forms
+
+- [Formik](https://formik.org/)
+
+### Jednoczesne requesty
+
+- zdefiniowanie liczby jednoczesnych zapytań
+
+### Ponawianie zapytania HTTP
+
+### Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)
+
+### Ścieżka krytyczna ładowania aplikacji
+
+### Optymalizacja komponentów
+
+- nie ładowanie wszystkiego, tylko to, co jest widoczne np. obrazki, listy
+  - [Tech] Intersection Observer API
+- przerywać zapytania HTTP jeśli już nie są potrzebne dla komponentu
+  - [Tech] AbortController
+
+### Loader
+
+### Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA
+
+---
+
+## Testy
+
+### Testy obsługi braku połączenia z internetem
+
+Kroki:
+
+- Wyłączyć internet na maszynie, gdzie jest uruchomiona aplikacja
+
+[i] Zweryfikować:
+
+- Czy nie robimy niepotrzebnych zapytań HTTP?
+- Czy wyświetlamy komunikat o braku połączenia internetowego?
+
+[✅] Wskazówki:
+
+- Sprawdzenie połączenie z internetem można wykonać za pomocą `navigator.onLine`
+
+### Testy wydajnościowe
+
+[i] Zweryfikować:
+
+- W jakim czasie "obsłużymy" 100k użytkowników?
+- Ile użytkowników jesteśmy w stanie obsłużyć w ciągu jednej sekundy?
+
+[✅] Wskazówki:
+
+- Wykorzystać narzędzia:
+  - Apache Benchmark
+  - Artillery
+  - Locust
+
+### Tools
 
 - Unit Tests
   - [Jest](https://jestjs.io/docs/testing-frameworks)
@@ -309,13 +283,43 @@ TypeScript plugins:
   - [Playwright](https://playwright.dev/)
   - [Cypress](https://www.cypress.io/) ❌
   - [WebDriver.io](https://webdriver.io/)
+- Code Coverage
+  - [nyc](http://npmjs.com/package/nyc)
+  - [istanbul](https://istanbul.js.org/) ❌
 
-## Code Coverage
+---
 
-- [nyc](http://npmjs.com/package/nyc)
-- [istanbul](https://istanbul.js.org/) ❌
+## Codebase (Technical)
 
-## Pipelines
+### Bootstrap process
+
+- Having one function that starts the application eg. `main()`
+
+### Modules
+
+- ES2015 / AMD / CommonJS
+- npm/webpack
+
+### Jedno miejsce ze wszystkimi typami customowych błędów
+
+- Zdefiniować wszystkie błędy w jednym miejscu, aby nie były rozproszone
+  po całej aplikacji
+- Przykład: `src/errors/index.ts`
+
+### Configuration
+
+- https://12factor.net/pl/config
+  - Having one place with configuration `config.js`
+
+### Component Events
+
+- Communication between components `npm/super-event-emitter`
+
+---
+
+## Infrastructure
+
+### Pipelines
 
 - UI Error Collector of runtime errors
 - Observability
@@ -323,12 +327,23 @@ TypeScript plugins:
   - Metrics
   - Traces
 
-## Changelog
+### Przetestować cofanie deployu aplikacji - tzw. rollback
 
-- https://github.com/piecioshka/changelog-all-possibilities
-- https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html
+### Release process
 
-## Bonus Services
+- Use any tool for application deployment, e.g. `npm/release-it`
+
+---
+
+## Services
 
 - [Sourcegraph](https://sourcegraph.com/search)
 - [SonarQube](https://www.sonarsource.com/products/sonarqube/)
+
+### GitHub
+
+- Template for PR - `.github/PULL_REQUEST_TEMPLATE.md`
+  - https://github.com/devspace/awesome-github-templates#rocket-templates-for-pull-requests
+- Template for issues - `.github/ISSUE_TEMPLATE.md`
+  - https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues
+- Contributing rules - `.github/CONTRIBUTING.md`
