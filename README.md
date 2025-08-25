@@ -32,31 +32,31 @@ wersją samej siebie.
   * [Błędy HTTP: Zdefiniowane przez back-end](#bledy-http-zdefiniowane-przez-back-end)
   * [Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_](#bledy-http-znieksztalcona-odpowiedz-_en-malformed-reponses_)
 - [Backend](#backend)
-  * [Lokalne zasoby](#lokalne-zasoby)
+  * [Local Resources](#local-resources)
   * [Log management (Zbieranie logów)](#log-management-zbieranie-logow)
   * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
 - [Frontend (UI)](#frontend-ui)
   * [Forms](#forms)
-  * [Jednoczesne requesty](#jednoczesne-requesty)
-  * [Ponawianie zapytania HTTP](#ponawianie-zapytania-http)
-  * [Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)](#cache-responsow-retencja-czyszczenie-przyciskiem-w-ustawieniach)
-  * [Ścieżka krytyczna ładowania aplikacji](#sciezka-krytyczna-ladowania-aplikacji)
-  * [Optymalizacja komponentów](#optymalizacja-komponentow)
+  * [Concurrent Requests](#concurrent-requests)
+  * [HTTP Request Retry](#http-request-retry)
+  * [Response Caching (Retention, Clearing via a Button in Settings)](#response-caching-retention-clearing-via-a-button-in-settings)
+  * [Critical Path for Application Loading](#critical-path-for-application-loading)
+  * [Component Optimization](#component-optimization)
   * [Loader](#loader)
-  * [Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA](#przetestowac-nawigacje-przycisk-wstecz-w-przegladarce-dla-aplikacji-spa)
-- [Testy](#testy)
-  * [Testy obsługi braku połączenia z internetem](#testy-obslugi-braku-polaczenia-z-internetem)
-  * [Testy wydajnościowe](#testy-wydajnosciowe)
+  * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
+- [Tests](#tests)
+  * [Offline Connection Tests](#offline-connection-tests)
+  * [Performance Tests](#performance-tests)
   * [Tools](#tools-1)
 - [Codebase (Technical)](#codebase-technical)
   * [Bootstrap process](#bootstrap-process)
   * [Modules](#modules)
-  * [Jedno miejsce ze wszystkimi typami customowych błędów](#jedno-miejsce-ze-wszystkimi-typami-customowych-bledow)
+  * [One Place for All Custom Error Types](#one-place-for-all-custom-error-types)
   * [Configuration](#configuration)
   * [Component Events](#component-events)
 - [Infrastructure](#infrastructure)
   * [Pipelines](#pipelines)
-  * [Przetestować cofanie deployu aplikacji - tzw. rollback](#przetestowac-cofanie-deployu-aplikacji---tzw-rollback)
+  * [Test application rollback deployment](#test-application-rollback-deployment)
   * [Release process](#release-process)
 - [Services](#services)
   * [GitHub](#github)
@@ -85,7 +85,7 @@ wersją samej siebie.
 
 ### ESLint
 
-[Playground](https://eslint.org/play/)
+🕹️ [Playground](https://eslint.org/play/)
 
 ```js
 'no-unsafe-optional-chaining': 'error',
@@ -170,7 +170,6 @@ TypeScript plugins:
 - [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
   - https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports
 
-
 ### Utilities
 
 - [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
@@ -249,10 +248,10 @@ Zweryfikować:
 
 ## Backend
 
-### Lokalne zasoby
+### Local Resources
 
-- zmienić adresy na lokalne, aby nie wychodziły poza serwerownie
-- zmienić protokół na HTTP, aby nie szyfrować lokalnych requestów
+- Change addresses to local ones to avoid leaving the server room.
+- Switch the protocol to HTTP to avoid encrypting local requests.
 
 ### Log management (Zbieranie logów)
 
@@ -271,56 +270,56 @@ Zweryfikować:
 
 - [Formik](https://formik.org/)
 
-### Jednoczesne requesty
+### Concurrent Requests
 
-- zdefiniowanie liczby jednoczesnych zapytań
+- Define the number of simultaneous requests.
 
-### Ponawianie zapytania HTTP
+### HTTP Request Retry
 
-### Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)
+### Response Caching (Retention, Clearing via a Button in Settings)
 
-### Ścieżka krytyczna ładowania aplikacji
+### Critical Path for Application Loading
 
-### Optymalizacja komponentów
+### Component Optimization
 
-- nie ładowanie wszystkiego, tylko to, co jest widoczne np. obrazki, listy
+- Load only what is visible, e.g., images, lists.
   - [Tech] Intersection Observer API
-- przerywać zapytania HTTP jeśli już nie są potrzebne dla komponentu
+- Cancel HTTP requests if they are no longer needed for the component.
   - [Tech] AbortController
 
 ### Loader
 
-### Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA
+### Test Navigation: "Back" Button in the Browser for SPA Applications
 
 ---
 
-## Testy
+## Tests
 
-### Testy obsługi braku połączenia z internetem
+### Offline Connection Tests
 
-Kroki:
+Steps:
 
-- Wyłączyć internet na maszynie, gdzie jest uruchomiona aplikacja
+- Disable the internet on the machine where the application is running.
 
-Zweryfikować:
+Verify:
 
-- Czy nie robimy niepotrzebnych zapytań HTTP?
-- Czy wyświetlamy komunikat o braku połączenia internetowego?
-
-💡 TIP:
-
-- Sprawdzenie połączenie z internetem można wykonać za pomocą `navigator.onLine`
-
-### Testy wydajnościowe
-
-Zweryfikować:
-
-- W jakim czasie "obsłużymy" 100k użytkowników?
-- Ile użytkowników jesteśmy w stanie obsłużyć w ciągu jednej sekundy?
+- Are we avoiding unnecessary HTTP requests?
+- Are we displaying a message about the lack of internet connection?
 
 💡 TIP:
 
-- Wykorzystać narzędzia:
+- You can check the internet connection using `navigator.onLine`.
+
+### Performance Tests
+
+Verify:
+
+- How long does it take to handle 100k users?
+- How many users can we handle per second?
+
+💡 TIP:
+
+- Use tools like:
   - Apache Benchmark
   - Artillery
   - Locust
@@ -354,11 +353,10 @@ Zweryfikować:
 - ES2015 / AMD / CommonJS
 - npm/webpack
 
-### Jedno miejsce ze wszystkimi typami customowych błędów
+### One Place for All Custom Error Types
 
-- Zdefiniować wszystkie błędy w jednym miejscu, aby nie były rozproszone
-  po całej aplikacji
-- Przykład: `src/errors/index.ts`
+- Define all errors in a single location to avoid scattering them across the application.
+- Example: `src/errors/index.ts`
 
 ### Configuration
 
@@ -381,7 +379,7 @@ Zweryfikować:
   - Metrics
   - Traces
 
-### Przetestować cofanie deployu aplikacji - tzw. rollback
+### Test application rollback deployment
 
 ### Release process
 
