@@ -208,6 +208,23 @@ plugins:
 
 - [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
 - [eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)
+  - [consistent-type-specifier-style](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/consistent-type-specifier-style.md)
+    ```js
+    'import/consistent-type-specifier-style': [
+      'error',
+      {
+        mode: 'prefer-top-level',
+      },
+    ],
+    ```
+  - [enforce-node-protocol-usage](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/enforce-node-protocol-usage.md)
+    ```js
+    'import/enforce-node-protocol-usage': 'error',
+    ```
+  - [newline-after-import](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md)
+    ```js
+    'import/newline-after-import': ["error", { "count": 1 }],
+    ```
   - [no-extraneous-dependencies](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md)
     ```js
     'import/no-extraneous-dependencies': [
@@ -223,26 +240,9 @@ plugins:
     ```js
     'import/no-relative-parent-imports': 'error',
     ```
-  - [enforce-node-protocol-usage](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/enforce-node-protocol-usage.md)
-    ```js
-    'import/enforce-node-protocol-usage': 'error',
-    ```
   - [no-self-import](https://github.com/import-js/eslint-plugin-import)
     ```js
     'import/no-self-import': 'error',
-    ```
-  - [consistent-type-specifier-style](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/consistent-type-specifier-style.md)
-    ```js
-    'import/consistent-type-specifier-style': [
-      'error',
-      {
-        mode: 'prefer-top-level',
-      },
-    ],
-    ```
-  - [newline-after-import](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md)
-    ```js
-    'import/newline-after-import': ["error", { "count": 1 }],
     ```
   - [order](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
     ```js
