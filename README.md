@@ -213,8 +213,8 @@ Zweryfikować:
 💡 TIP:
 
 - Wykorzystać narzędzia:
-  - [sanitize-html](https://www.npmjs.com/package/sanitize-html)
-  - [escape-html](https://www.npmjs.com/package/escape-html)
+  - [npm/sanitize-html](https://www.npmjs.com/package/sanitize-html)
+  - [npm/escape-html](https://www.npmjs.com/package/escape-html)
 
 ### Strona z błędem
 
@@ -270,7 +270,7 @@ Zweryfikować:
 
 ### Log management (Zbieranie logów)
 
-- Use the tool `npm/debug`
+- Use the tool [npm/debug](http://www.npmjs.com/package/debug)
 
 ### SSR (Server-Side Rendering)
 
@@ -357,7 +357,7 @@ Verify:
   - [Cypress](https://www.cypress.io/) ❌
   - [WebDriver.io](https://webdriver.io/)
 - Code Coverage
-  - [nyc](http://npmjs.com/package/nyc)
+  - [npm/nyc](http://npmjs.com/package/nyc)
   - [istanbul](https://istanbul.js.org/) ❌
 
 ---
@@ -371,7 +371,7 @@ Verify:
 ### Modules
 
 - ES2015 / AMD / CommonJS
-- npm/webpack
+- [npm/webpack](https://www.npmjs.com/package/webpack)
 
 ### One Place for All Custom Error Types
 
@@ -385,7 +385,7 @@ Verify:
 
 ### Component Events
 
-- Communication between components `npm/super-event-emitter`
+- Communication between components [npm/super-event-emitter](http://www.npmjs.com/package/super-event-emitter)
 
 ---
 
@@ -403,7 +403,7 @@ Verify:
 
 ### Release process
 
-- Use any tool for application deployment, e.g. `npm/release-it`
+- Use any tool for application deployment, e.g. [npm/release-it](http://www.npmjs.com/package/release-it)
 
 ---
 
