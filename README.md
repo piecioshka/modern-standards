@@ -138,11 +138,11 @@ TypeScript plugins:
 
 ### Dane pochodzące od użytkownika
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy wszystko to co wpisał użytkownik do dowolnego pola formularza jest sanityzowane?
 
-[✅] Wskazówki:
+💡 TIP:
 
 - Wykorzystać narzędzia:
   - https://www.npmjs.com/package/sanitize-html
@@ -150,7 +150,7 @@ TypeScript plugins:
 
 ### Strona z błędem
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy jest zbudowana specjalna strona na błędy?
 - Czy przekierowujemy użytkownika na stronę z błędem kiedy nie ma dostępu
@@ -160,31 +160,31 @@ TypeScript plugins:
 
 ### Błędy HTTP: Zgodnie z naturą REST
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy obsługujemy problem z pozyskaniem odpowiedzi z uwagi na błąd HTTP?
   - np. gdy wystąpi `HTTP Status 500 - Internal Server Error`
 
 ### Błędy HTTP: Zdefiniowane przez back-end
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy obsługujemy customowe błędy zdefiniowane w części serwerowej?
   - np. w nie jest znaleziony zasób i w odpowiedzi otrzymujemy JSONa
     z kluczem `error` oraz kodem błędu
 
-[✅] Wskazówki:
+💡 TIP:
 
 - Pozyskać wszystkie kody błędów jakie są zdefiniowane po stronie serwera
   aplikacji klienckiej, którą rozwijamy
 
 ### Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy odpowiedź jest w poprawnym formacie
 
-[✅] Wskazówki:
+💡 TIP:
 
 - Wykorzystać Output Schemę lub kontrakt Swagerowy, w którym to zdefiniowany
   jest format oczekiwanej odpowiedzi
@@ -248,23 +248,23 @@ Kroki:
 
 - Wyłączyć internet na maszynie, gdzie jest uruchomiona aplikacja
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - Czy nie robimy niepotrzebnych zapytań HTTP?
 - Czy wyświetlamy komunikat o braku połączenia internetowego?
 
-[✅] Wskazówki:
+💡 TIP:
 
 - Sprawdzenie połączenie z internetem można wykonać za pomocą `navigator.onLine`
 
 ### Testy wydajnościowe
 
-[i] Zweryfikować:
+Zweryfikować:
 
 - W jakim czasie "obsłużymy" 100k użytkowników?
 - Ile użytkowników jesteśmy w stanie obsłużyć w ciągu jednej sekundy?
 
-[✅] Wskazówki:
+💡 TIP:
 
 - Wykorzystać narzędzia:
   - Apache Benchmark
