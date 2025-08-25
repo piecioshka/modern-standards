@@ -197,34 +197,73 @@ Kroki:
 
 ## ESLint ([playground](https://eslint.org/play/))
 
-- import/no-relative-parent-imports
-- `no-unsafe-optional-chaining: 'error'`
-- `prefer-arrow-callback: 'error'`
-- import/no-extraneous-dependencies
+```js
+'no-unsafe-optional-chaining': 'error',
+'prefer-arrow-callback': 'error',
+'no-param-reassign': 'error',
+'no-extra-boolean-cast': 'error',
+```
 
 plugins:
 
 - [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
 - [eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)
-  ```js
-  'import/order': [
-    'error',
-    {
-      groups: [
-        'builtin',
-        'external',
-        'internal',
-        'unknown',
-        'parent',
-        'sibling',
-        'index',
-        'object',
-        'type',
-      ],
-      'newlines-between': 'always',
-    },
-  ],
-  ```
+  - [no-extraneous-dependencies](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md)
+    ```js
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: false,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
+    ```
+  - [no-relative-parent-imports](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-relative-parent-imports.md)
+    ```js
+    'import/no-relative-parent-imports': 'error',
+    ```
+  - [enforce-node-protocol-usage](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/enforce-node-protocol-usage.md)
+    ```js
+    'import/enforce-node-protocol-usage': 'error',
+    ```
+  - [no-self-import](https://github.com/import-js/eslint-plugin-import)
+    ```js
+    'import/no-self-import': 'error',
+    ```
+  - [consistent-type-specifier-style](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/consistent-type-specifier-style.md)
+    ```js
+    'import/consistent-type-specifier-style': [
+      'error',
+      {
+        mode: 'prefer-top-level',
+      },
+    ],
+    ```
+  - [newline-after-import](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md)
+    ```js
+    'import/newline-after-import': ["error", { "count": 1 }],
+    ```
+  - [order](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
+    ```js
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'unknown',
+          'parent',
+          'sibling',
+          'index',
+          'object',
+          'type',
+        ],
+        'newlines-between': 'always',
+      },
+    ],
+    ```
 - [eslint-plugin-no-relative-import-paths](https://github.com/MelvinVermeer/eslint-plugin-no-relative-import-paths)
 - [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react)
 - [eslint-plugin-regexp](https://github.com/ota-meshi/eslint-plugin-regexp)
