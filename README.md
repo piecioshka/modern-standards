@@ -177,13 +177,12 @@ Kroki:
 
 ## UI
 
-- React
+- [React](https://reactjs.org/)
+- [Storybook](https://storybook.js.org/)
 
 ### Forms
 
-- Formik
-
-## Storybook
+- [Formik](https://formik.org/)
 
 ## TypeScript
 
@@ -296,7 +295,7 @@ TypeScript plugins:
 
 - [react-query](https://react-query.tanstack.com/)
 - [Apollo GraphQL](https://www.apollographql.com/)
-- [axios](https://axios-http.com/) ❌
+- [Axios](https://axios-http.com/) ❌
 
 ## Tests
 
@@ -326,7 +325,8 @@ TypeScript plugins:
 
 ## Changelog
 
-- https://github.com/piecioshka/changelog-all-ways-to-build
+- https://github.com/piecioshka/changelog-all-possibilities
+- https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html
 
 ## Bonus Services
 
