@@ -143,16 +143,15 @@ Kroki:
 
 ## [Tech] Bootstrap process
 
-- posiadanie jednej funkcji, która startuje aplikację:
-- [Tech] `main()`
+- Having one function that starts the application eg. `main()`
 
 ## [Backend] Log management
 
-- Wykorzystać paczkę `npm/debug`
+- Use the tool `npm/debug`
 
 ## [Infrastructure] Release process
 
-- Wykorzystać dowolne narzędzie do publikacji aplikacji np. `npm/release-it`
+- Use any tool for application deployment, e.g. `npm/release-it`
 
 ## [Tech] Modules
 
@@ -161,15 +160,20 @@ Kroki:
 
 ## Configuration
 
-- Posiadanie jednego miejsca z konfiguracją `config.js`
+- https://12factor.net/pl/config
+  - Having one place with configuration `config.js`
 
 ## Component Events
 
-- Komunikacja między komponentami `npm/super-event-emitter`
+- Communication between components `npm/super-event-emitter`
 
 ## GitHub
 
-- .github/PULL_REQUEST_TEMPLATE.md
+- Template for PR - `.github/PULL_REQUEST_TEMPLATE.md`
+  - https://github.com/devspace/awesome-github-templates#rocket-templates-for-pull-requests
+- Template for issues - `.github/ISSUE_TEMPLATE.md`
+  - https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues
+- Contributing rules - `.github/CONTRIBUTING.md`
 
 ## UI
 
@@ -180,8 +184,6 @@ Kroki:
 - Formik
 
 ## Storybook
-
-- [Talk] How to work on components with Storybook? Tips & Tricks
 
 ## TypeScript
 
@@ -282,37 +284,37 @@ TypeScript plugins:
 
 ## Other tools
 
-- Husky
-- Lint-staged
-- Prettier
+- [Husky](https://typicode.github.io/husky/#/)
+- [Lint-staged](https://github.com/okonet/lint-staged)
+- [Prettier](https://prettier.io/)
 
 ## Utilities
 
-- Lodash - the best is version "lodash-es" because it supports Tree Shaking
+- [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
 
 ## HTTP Request
 
-- react-query
-- Apollo GraphQL
-- axios ❌
+- [react-query](https://react-query.tanstack.com/)
+- [Apollo GraphQL](https://www.apollographql.com/)
+- [axios](https://axios-http.com/) ❌
 
 ## Tests
 
 - Unit Tests
-  - jest
+  - [Jest](https://jestjs.io/docs/testing-frameworks)
 - Component Tests
-  - RTL (React Testing Library)
-  - Enzyme ❌
+  - [RTL (React Testing Library)](https://testing-library.com/docs/react-testing-library/intro/)
+  - [Enzyme](https://enzymejs.github.io/enzyme/) ❌
 - End to End Tests
-  - Cucumber.js
-  - Playwright
-  - Cypress ❌
-  - WebDriver.io
+  - [Cucumber.js](https://cucumber.io/docs/guides/overview/)
+  - [Playwright](https://playwright.dev/)
+  - [Cypress](https://www.cypress.io/) ❌
+  - [WebDriver.io](https://webdriver.io/)
 
 ## Code Coverage
 
-- nyc
-- istanbul ❌
+- [nyc](http://npmjs.com/package/nyc)
+- [istanbul](https://istanbul.js.org/) ❌
 
 ## Pipelines
 
@@ -322,7 +324,11 @@ TypeScript plugins:
   - Metrics
   - Traces
 
+## Changelog
+
+- https://github.com/piecioshka/changelog-all-ways-to-build
+
 ## Bonus Services
 
-- Sourcegraph
-- SonarQube
+- [Sourcegraph](https://sourcegraph.com/search)
+- [SonarQube](https://www.sonarsource.com/products/sonarqube/)
