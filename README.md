@@ -16,11 +16,12 @@ wersją samej siebie.
 ## Table of Contents
 
 <!-- To build TOC run: npx markdown-toc -i README.md -->
+
 <!-- toc -->
 
 - [Tools](#tools)
   * [TypeScript](#typescript)
-  * [ESLint ([playground](https://eslint.org/play/))](#eslint-playgroundhttpseslintorgplay)
+  * [ESLint](#eslint)
   * [Utilities](#utilities)
   * [HTTP Request](#http-request)
   * [Changelog](#changelog)
@@ -82,7 +83,9 @@ wersją samej siebie.
   }
   ```
 
-### ESLint ([playground](https://eslint.org/play/))
+### ESLint
+
+[Playground](https://eslint.org/play/)
 
 ```js
 'no-unsafe-optional-chaining': 'error',
