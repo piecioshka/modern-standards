@@ -13,6 +13,57 @@ wersją samej siebie.
 
 ---
 
+## Table of Contents
+
+<!-- To build TOC run: npx markdown-toc -i README.md -->
+<!-- toc -->
+
+- [Tools](#tools)
+  * [TypeScript](#typescript)
+  * [ESLint ([playground](https://eslint.org/play/))](#eslint-playgroundhttpseslintorgplay)
+  * [Utilities](#utilities)
+  * [HTTP Request](#http-request)
+  * [Changelog](#changelog)
+- [Error Handling](#error-handling)
+  * [Dane pochodzące od użytkownika](#dane-pochodzace-od-uzytkownika)
+  * [Strona z błędem](#strona-z-bledem)
+  * [Błędy HTTP: Zgodnie z naturą REST](#bledy-http-zgodnie-z-natura-rest)
+  * [Błędy HTTP: Zdefiniowane przez back-end](#bledy-http-zdefiniowane-przez-back-end)
+  * [Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_](#bledy-http-znieksztalcona-odpowiedz-_en-malformed-reponses_)
+- [Backend](#backend)
+  * [Lokalne zasoby](#lokalne-zasoby)
+  * [Log management (Zbieranie logów)](#log-management-zbieranie-logow)
+  * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
+- [Frontend (UI)](#frontend-ui)
+  * [Forms](#forms)
+  * [Jednoczesne requesty](#jednoczesne-requesty)
+  * [Ponawianie zapytania HTTP](#ponawianie-zapytania-http)
+  * [Cache responsów (retencja, czyszczenie przyciskiem w ustawieniach)](#cache-responsow-retencja-czyszczenie-przyciskiem-w-ustawieniach)
+  * [Ścieżka krytyczna ładowania aplikacji](#sciezka-krytyczna-ladowania-aplikacji)
+  * [Optymalizacja komponentów](#optymalizacja-komponentow)
+  * [Loader](#loader)
+  * [Przetestować nawigację: przycisk "Wstecz" w przeglądarce dla aplikacji SPA](#przetestowac-nawigacje-przycisk-wstecz-w-przegladarce-dla-aplikacji-spa)
+- [Testy](#testy)
+  * [Testy obsługi braku połączenia z internetem](#testy-obslugi-braku-polaczenia-z-internetem)
+  * [Testy wydajnościowe](#testy-wydajnosciowe)
+  * [Tools](#tools-1)
+- [Codebase (Technical)](#codebase-technical)
+  * [Bootstrap process](#bootstrap-process)
+  * [Modules](#modules)
+  * [Jedno miejsce ze wszystkimi typami customowych błędów](#jedno-miejsce-ze-wszystkimi-typami-customowych-bledow)
+  * [Configuration](#configuration)
+  * [Component Events](#component-events)
+- [Infrastructure](#infrastructure)
+  * [Pipelines](#pipelines)
+  * [Przetestować cofanie deployu aplikacji - tzw. rollback](#przetestowac-cofanie-deployu-aplikacji---tzw-rollback)
+  * [Release process](#release-process)
+- [Services](#services)
+  * [GitHub](#github)
+
+<!-- tocstop -->
+
+---
+
 ## Tools
 
 - [Husky](https://typicode.github.io/husky/#/)
