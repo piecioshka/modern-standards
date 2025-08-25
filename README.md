@@ -20,6 +20,9 @@ wersją samej siebie.
 <!-- toc -->
 
 - [Tools](#tools)
+- [Husky](#husky)
+- [Lint-staged](#lint-staged)
+- [Prettier](#prettier)
   * [TypeScript](#typescript)
   * [ESLint](#eslint)
   * [Utilities](#utilities)
@@ -36,6 +39,8 @@ wersją samej siebie.
   * [Log management (Zbieranie logów)](#log-management-zbieranie-logow)
   * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
 - [Frontend (UI)](#frontend-ui)
+  * [React](#react)
+  * [Storybook](#storybook)
   * [Forms](#forms)
   * [Concurrent Requests](#concurrent-requests)
   * [HTTP Request Retry](#http-request-retry)
@@ -59,6 +64,8 @@ wersją samej siebie.
   * [Test application rollback deployment](#test-application-rollback-deployment)
   * [Release process](#release-process)
 - [Services](#services)
+  * [Sourcegraph](#sourcegraph)
+  * [SonarQube](#sonarqube)
   * [GitHub](#github)
 
 <!-- tocstop -->
@@ -67,9 +74,17 @@ wersją samej siebie.
 
 ## Tools
 
-- [Husky](https://typicode.github.io/husky/#/)
-- [Lint-staged](https://github.com/okonet/lint-staged)
-- [Prettier](https://prettier.io/)
+## Husky
+
+- https://typicode.github.io/husky/
+
+## Lint-staged
+
+- https://github.com/okonet/lint-staged
+
+## Prettier
+
+- https://prettier.io/
 
 ### TypeScript
 
@@ -263,8 +278,13 @@ Zweryfikować:
 
 ## Frontend (UI)
 
-- [React](https://reactjs.org/)
-- [Storybook](https://storybook.js.org/)
+### React
+
+- https://react.dev/
+
+### Storybook
+
+- https://storybook.js.org/
 
 ### Forms
 
@@ -389,8 +409,13 @@ Verify:
 
 ## Services
 
-- [Sourcegraph](https://sourcegraph.com/search)
-- [SonarQube](https://www.sonarsource.com/products/sonarqube/)
+### Sourcegraph
+
+- https://sourcegraph.com/search
+
+### SonarQube
+
+- https://www.sonarsource.com/products/sonarqube/
 
 ### GitHub
 
