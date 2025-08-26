@@ -274,21 +274,18 @@ Zweryfikować:
 
 ### SSR (Server-Side Rendering)
 
+### Tools
+
+- [Node.js](https://nodejs.org/en)
+  - [npm/express](http://www.npmjs.com/package/express)
+  - [npm/cors](http://www.npmjs.com/package/cors)
+  - [npm/body-parser](http://www.npmjs.com/package/body-parser)
+  - [npm/morgan](http://www.npmjs.com/package/morgan)
+  - [npm/helmet](http://www.npmjs.com/package/helmet)
+
 ---
 
 ## Frontend (UI)
-
-### React
-
-- https://react.dev/
-
-### Storybook
-
-- https://storybook.js.org/
-
-### Forms
-
-- [Formik](https://formik.org/)
 
 ### Concurrent Requests
 
@@ -310,6 +307,12 @@ Zweryfikować:
 ### Loader
 
 ### Test Navigation: "Back" Button in the Browser for SPA Applications
+
+### Tools
+
+- [React](https://react.dev/)
+- [Storybook](https://storybook.js.org/)
+- [Formik](https://formik.org/)
 
 ---
 
