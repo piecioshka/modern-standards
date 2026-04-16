@@ -1,15 +1,15 @@
 # Modern Standards
 
-Jeśli brakuje Ci odpowiedzi na poniższe pytania:
+🚀 Production-readiness checklist for modern web applications.
 
-- Co wykonać przed deployem aplikacji webowej?
-- Czy wszystko sprawdziłem przed pokazaniem aplikacji światu?
-- Co jest ważne z punktu widzenia aplikacji komercyjnej?
-- Co powinna posiadać każda aplikacja?
+---
 
-Myślę, że ten poradnik tyczy się również aplikacji, które już są dostępne
-dla użytkowników, a którym to brakuje trochę, aby być jeszcze solidniejszą
-wersją samej siebie.
+If you're missing answers to questions like:
+
+- What should be done before deploying a web application?
+- Have I checked everything before showing the application to the world?
+- What is important from the perspective of a commercial application?
+- What should every application have?
 
 ---
 
@@ -28,41 +28,74 @@ wersją samej siebie.
   * [Utilities](#utilities)
   * [HTTP Request](#http-request)
   * [Changelog](#changelog)
+- [Security](#security)
+  * [OWASP Top 10](#owasp-top-10)
+  * [Content Security Policy (CSP)](#content-security-policy-csp)
+  * [HTTPS](#https)
+  * [Authentication & Authorization](#authentication--authorization)
+  * [Secrets Management](#secrets-management)
+  * [Dependency Auditing](#dependency-auditing)
 - [Error Handling](#error-handling)
-  * [Dane pochodzące od użytkownika](#dane-pochodzace-od-uzytkownika)
-  * [Strona z błędem](#strona-z-bledem)
-  * [Błędy HTTP: Zgodnie z naturą REST](#bledy-http-zgodnie-z-natura-rest)
-  * [Błędy HTTP: Zdefiniowane przez back-end](#bledy-http-zdefiniowane-przez-back-end)
-  * [Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_](#bledy-http-znieksztalcona-odpowiedz-_en-malformed-reponses_)
+  * [User Input Data](#user-input-data)
+  * [Error Page](#error-page)
+  * [HTTP Errors: Following the REST Convention](#http-errors-following-the-rest-convention)
+  * [HTTP Errors: Defined by the Back-end](#http-errors-defined-by-the-back-end)
+  * [HTTP Errors: Malformed Responses](#http-errors-malformed-responses)
 - [Backend](#backend)
   * [Local Resources](#local-resources)
-  * [Log management (Zbieranie logów)](#log-management-zbieranie-logow)
+  * [Log Management](#log-management)
   * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
+  * [API Design](#api-design)
+  * [Database](#database)
+  * [Tools](#tools-1)
 - [Frontend (UI)](#frontend-ui)
-  * [React](#react)
-  * [Storybook](#storybook)
-  * [Forms](#forms)
+  * [State Management](#state-management)
   * [Concurrent Requests](#concurrent-requests)
   * [HTTP Request Retry](#http-request-retry)
-  * [Response Caching (Retention, Clearing via a Button in Settings)](#response-caching-retention-clearing-via-a-button-in-settings)
+  * [Response Caching](#response-caching)
   * [Critical Path for Application Loading](#critical-path-for-application-loading)
   * [Component Optimization](#component-optimization)
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
+  * [Tools](#tools-2)
+- [Accessibility (a11y)](#accessibility-a11y)
+  * [WCAG 2.1 Compliance](#wcag-21-compliance)
+  * [Keyboard Navigation](#keyboard-navigation)
+  * [Screen Readers](#screen-readers)
+  * [Color Contrast](#color-contrast)
+  * [Tools](#tools-3)
+- [SEO](#seo)
+  * [Meta Tags](#meta-tags)
+  * [Structured Data](#structured-data)
+  * [Sitemap & robots.txt](#sitemap--robotstxt)
+  * [Core Web Vitals](#core-web-vitals)
+  * [Tools](#tools-4)
+- [Internationalization (i18n)](#internationalization-i18n)
+  * [Multi-language Support](#multi-language-support)
+  * [RTL Layout Support](#rtl-layout-support)
+  * [Date, Number & Currency Formatting](#date-number--currency-formatting)
+  * [Translation Workflow](#translation-workflow)
 - [Tests](#tests)
   * [Offline Connection Tests](#offline-connection-tests)
   * [Performance Tests](#performance-tests)
-  * [Tools](#tools-1)
+  * [Tools](#tools-5)
 - [Codebase (Technical)](#codebase-technical)
-  * [Bootstrap process](#bootstrap-process)
+  * [Bootstrap Process](#bootstrap-process)
   * [Modules](#modules)
   * [One Place for All Custom Error Types](#one-place-for-all-custom-error-types)
   * [Configuration](#configuration)
   * [Component Events](#component-events)
 - [Infrastructure](#infrastructure)
   * [Pipelines](#pipelines)
-  * [Test application rollback deployment](#test-application-rollback-deployment)
-  * [Release process](#release-process)
+  * [Monitoring & Alerting](#monitoring--alerting)
+  * [Test Application Rollback Deployment](#test-application-rollback-deployment)
+  * [Release Process](#release-process)
+- [Developer Experience (DX)](#developer-experience-dx)
+  * [EditorConfig](#editorconfig)
+  * [Monorepo](#monorepo)
+  * [Dev Containers](#dev-containers)
+  * [Documentation](#documentation)
+  * [Dependency Updates](#dependency-updates)
 - [Services](#services)
   * [Sourcegraph](#sourcegraph)
   * [SonarQube](#sonarqube)
@@ -183,7 +216,7 @@ TypeScript plugins:
 - [@typescript-eslint/no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises/)
 - [@typescript-eslint/no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
 - [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
-  - https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports
+  - <https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports>
 
 ### Utilities
 
@@ -191,9 +224,9 @@ TypeScript plugins:
 
 ### HTTP Request
 
-- [react-query](https://react-query.tanstack.com/)
-- [Apollo GraphQL](https://www.apollographql.com/)
-- [Axios](https://axios-http.com/) ❌
+- [TanStack Query (React Query)](https://tanstack.com/query/latest) - declarative data fetching with caching, refetching, and synchronization
+- [Apollo GraphQL](https://www.apollographql.com/) - for GraphQL APIs
+- ~~[Axios](https://axios-http.com/)~~ ❌ — the native `fetch` API is now well-supported across all modern browsers and Node.js 18+, making Axios largely unnecessary. `fetch` is lighter, has no dependencies, and supports streaming natively.
 
 ### Changelog
 
@@ -202,62 +235,147 @@ TypeScript plugins:
 
 ---
 
-## Error Handling
+## Security
 
-### Dane pochodzące od użytkownika
+### OWASP Top 10
 
-Zweryfikować:
+Verify:
 
-- Czy wszystko to co wpisał użytkownik do dowolnego pola formularza jest sanityzowane?
+- Are you protected against **Cross-Site Scripting (XSS)**? Sanitize all user-generated content before rendering.
+- Are you protected against **Cross-Site Request Forgery (CSRF)**? Use anti-CSRF tokens for state-changing operations.
+- Are you protected against **SQL Injection**? Use parameterized queries or ORM — never concatenate user input into queries.
+- Are you protected against **Broken Authentication**? Enforce strong password policies, implement account lockout, and use MFA where possible.
+- Are you protected against **Sensitive Data Exposure**? Encrypt data at rest and in transit, never log sensitive information.
 
 💡 TIP:
 
-- Wykorzystać narzędzia:
+- Review the full list: <https://owasp.org/www-project-top-ten/>
+- Run automated scans with [OWASP ZAP](https://www.zaproxy.org/)
+
+### Content Security Policy (CSP)
+
+Verify:
+
+- Is a `Content-Security-Policy` header configured to restrict which resources (scripts, styles, images) can be loaded?
+- Is `script-src 'unsafe-inline'` avoided? Use nonces or hashes instead.
+- Is `frame-ancestors` set to prevent clickjacking?
+
+💡 TIP:
+
+- Start with a report-only policy (`Content-Security-Policy-Report-Only`) to identify violations before enforcing
+- Use [helmet](https://www.npmjs.com/package/helmet) in Node.js to set security headers easily
+- Test your CSP at <https://csp-evaluator.withgoogle.com/>
+
+### HTTPS
+
+Verify:
+
+- Is HTTPS enforced in production (HTTP redirects to HTTPS)?
+- Is HSTS (HTTP Strict Transport Security) enabled with a sufficient `max-age`?
+- Are all external resources (APIs, CDNs, fonts) loaded over HTTPS?
+
+### Authentication & Authorization
+
+Verify:
+
+- Are JWT tokens stored securely (prefer `httpOnly` cookies over `localStorage`)?
+- Do tokens have a reasonable expiration time?
+- Is there a token refresh mechanism?
+- Are API endpoints protected with proper authorization checks (not just authentication)?
+- Is role-based or attribute-based access control (RBAC/ABAC) implemented consistently?
+
+💡 TIP:
+
+- Consider using established providers: [Auth.js (NextAuth)](https://authjs.dev/), [Clerk](https://clerk.com/), [Auth0](https://auth0.com/)
+- Never implement your own cryptography — use well-tested libraries
+
+### Secrets Management
+
+Verify:
+
+- Are secrets (API keys, database credentials, tokens) excluded from the repository?
+- Is `.env` listed in `.gitignore`?
+- Are production secrets managed through a dedicated service, not environment files?
+
+💡 TIP:
+
+- Use [npm/dotenv](https://www.npmjs.com/package/dotenv) for local development
+- Use a secrets manager for production: AWS Secrets Manager, HashiCorp Vault, Doppler
+- Run [git-secrets](https://github.com/awslabs/git-secrets) or [gitleaks](https://github.com/gitleaks/gitleaks) in CI to prevent accidental commits
+
+### Dependency Auditing
+
+Verify:
+
+- Is `npm audit` (or equivalent) run regularly?
+- Are known vulnerabilities in dependencies addressed promptly?
+- Is there a policy for handling critical vs. low-severity vulnerabilities?
+
+💡 TIP:
+
+- Use tools:
+  - `npm audit` — built-in, zero setup
+  - [Snyk](https://snyk.io/) — continuous monitoring with PR fixes
+  - [Socket](https://socket.dev/) — detects supply chain attacks (typosquatting, install scripts)
+
+---
+
+## Error Handling
+
+### User Input Data
+
+Verify:
+
+- Is everything that the user enters into any form field being sanitized?
+
+💡 TIP:
+
+- Use tools:
   - [npm/sanitize-html](https://www.npmjs.com/package/sanitize-html)
   - [npm/escape-html](https://www.npmjs.com/package/escape-html)
 
-### Strona z błędem
+### Error Page
 
-Zweryfikować:
+Verify:
 
-- Czy jest zbudowana specjalna strona na błędy?
-- Czy przekierowujemy użytkownika na stronę z błędem kiedy nie ma dostępu
-  do wyświetlanego zasobu? Przykłady:
-  - nie istnieje już dana strona,
-  - albo użytkownik chce przejść do strony dla zalogowanych będąc niezalogowanym
+- Is there a dedicated error page built for the application?
+- Are we redirecting the user to an error page when they don't have access
+  to the displayed resource? Examples:
+  - the page no longer exists,
+  - or the user wants to access a page for logged-in users while being logged out
 
-### Błędy HTTP: Zgodnie z naturą REST
+### HTTP Errors: Following the REST Convention
 
-Zweryfikować:
+Verify:
 
-- Czy obsługujemy problem z pozyskaniem odpowiedzi z uwagi na błąd HTTP?
-  - np. gdy wystąpi `HTTP Status 500 - Internal Server Error`
+- Are we handling problems with obtaining a response due to an HTTP error?
+  - e.g., when `HTTP Status 500 - Internal Server Error` occurs
 
-### Błędy HTTP: Zdefiniowane przez back-end
+### HTTP Errors: Defined by the Back-end
 
-Zweryfikować:
+Verify:
 
-- Czy obsługujemy customowe błędy zdefiniowane w części serwerowej?
-  - np. w nie jest znaleziony zasób i w odpowiedzi otrzymujemy JSONa
-    z kluczem `error` oraz kodem błędu
-
-💡 TIP:
-
-- Pozyskać wszystkie kody błędów jakie są zdefiniowane po stronie serwera
-  aplikacji klienckiej, którą rozwijamy
-
-### Błędy HTTP: Zniekształcona odpowiedź _(en: Malformed reponses)_
-
-Zweryfikować:
-
-- Czy odpowiedź jest w poprawnym formacie
+- Are we handling custom errors defined on the server side?
+  - e.g., when a resource is not found and we receive a JSON response
+    with an `error` key and an error code
 
 💡 TIP:
 
-- Wykorzystać Output Schemę lub kontrakt Swagerowy, w którym to zdefiniowany
-  jest format oczekiwanej odpowiedzi
-- Wykorzystać narzędzia:
-  - ajv, aby zbudować schemę oczekiwanej odpowiedzi
+- Obtain all error codes defined on the server side of the client
+  application you are developing
+
+### HTTP Errors: Malformed Responses
+
+Verify:
+
+- Is the response in the correct format?
+
+💡 TIP:
+
+- Use an Output Schema or a Swagger contract where the expected response
+  format is defined
+- Use tools:
+  - ajv — to build a schema for the expected response
 
 ---
 
@@ -268,34 +386,184 @@ Zweryfikować:
 - Change addresses to local ones to avoid leaving the server room.
 - Switch the protocol to HTTP to avoid encrypting local requests.
 
-### Log management (Zbieranie logów)
+### Log Management
 
-- Use the tool [npm/debug](http://www.npmjs.com/package/debug)
+- Use structured logging with log levels (debug, info, warn, error)
+- Include contextual information (request ID, user ID, timestamp) in log entries
+- Use tools:
+  - [npm/pino](https://www.npmjs.com/package/pino) — fast, low-overhead JSON logger
+  - [npm/winston](https://www.npmjs.com/package/winston) — versatile logger with multiple transports
+  - ~~[npm/debug](https://www.npmjs.com/package/debug)~~ ❌ — suitable only for development-time debugging, not for production logging. Lacks structured output, log levels, and transport support.
 
 ### SSR (Server-Side Rendering)
+
+Verify:
+
+- Does the application benefit from SSR? Consider it when:
+  - SEO is important (public-facing content pages)
+  - First Contentful Paint (FCP) performance is critical
+  - Users on slow devices or networks need faster initial page loads
+- Are you handling hydration mismatches between server and client?
+- Is sensitive data (tokens, secrets) properly excluded from server-rendered HTML?
+
+💡 TIP:
+
+- Use frameworks with built-in SSR support:
+  - [Next.js](https://nextjs.org/) — for React applications
+  - [Nuxt](https://nuxt.com/) — for Vue applications
+  - [Astro](https://astro.build/) — for content-heavy sites with minimal client-side JS
+
+### API Design
+
+#### REST Conventions
+
+Verify:
+
+- Are resource names plural and lowercase? (e.g., `/api/users`, not `/api/User`)
+- Are HTTP methods used correctly? (`GET` for reading, `POST` for creating, `PUT`/`PATCH` for updating, `DELETE` for removing)
+- Is API versioning in place? (e.g., `/api/v1/users`)
+- Is pagination implemented for list endpoints? (using `page`/`limit` or cursor-based)
+- Are consistent response envelopes used? (e.g., `{ data, meta, errors }`)
+
+#### API Documentation
+
+Verify:
+
+- Is there an OpenAPI/Swagger specification for the API?
+- Is the documentation auto-generated from code or kept in sync manually?
+- Is there a live interactive playground (e.g., Swagger UI)?
+
+💡 TIP:
+
+- Use tools:
+  - [Swagger UI](https://swagger.io/tools/swagger-ui/)
+  - [Redoc](https://redocly.com/)
+
+#### Rate Limiting
+
+Verify:
+
+- Are API endpoints protected against abuse with rate limiting?
+- Are rate limit headers returned to clients? (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+
+💡 TIP:
+
+- Use [npm/express-rate-limit](https://www.npmjs.com/package/express-rate-limit) for Express.js
+
+#### Request Validation
+
+Verify:
+
+- Are all incoming request bodies, query params, and path params validated?
+- Are validation errors returned with clear, actionable messages?
+
+💡 TIP:
+
+- Use tools:
+  - [Zod](https://zod.dev/) — TypeScript-first schema validation with static type inference
+  - ~~[Joi](https://joi.dev/)~~ ❌ — no native TypeScript type inference, heavier API surface, and less integration with modern TypeScript-first workflows
+
+### Database
+
+#### Migrations
+
+Verify:
+
+- Is database schema versioned through migration files?
+- Can migrations be rolled back safely?
+- Are migrations run automatically in the CI/CD pipeline?
+
+#### Connection Pooling
+
+Verify:
+
+- Is a connection pool configured to avoid exhausting database connections?
+- Are pool size limits set appropriately for the expected load?
+
+#### Backups & Restore
+
+Verify:
+
+- Are automated backups configured and running?
+- Has the restore procedure been tested at least once?
+- Is the backup retention policy defined (daily, weekly, monthly)?
+
+#### ORM
+
+- [Prisma](https://www.prisma.io/) — type-safe database client with auto-generated types and migrations
+- [Drizzle](https://orm.drizzle.team/) — lightweight, SQL-like TypeScript ORM with zero dependencies
 
 ### Tools
 
 - [Node.js](https://nodejs.org/en)
-  - [npm/express](http://www.npmjs.com/package/express)
-  - [npm/cors](http://www.npmjs.com/package/cors)
-  - [npm/body-parser](http://www.npmjs.com/package/body-parser)
-  - [npm/morgan](http://www.npmjs.com/package/morgan)
-  - [npm/helmet](http://www.npmjs.com/package/helmet)
+  - [npm/express](https://www.npmjs.com/package/express)
+  - [npm/cors](https://www.npmjs.com/package/cors)
+  - [npm/helmet](https://www.npmjs.com/package/helmet)
+  - [npm/morgan](https://www.npmjs.com/package/morgan)
 
 ---
 
 ## Frontend (UI)
 
+### State Management
+
+- [Zustand](https://zustand.docs.pmnd.rs/) — lightweight, minimal boilerplate, no providers needed
+- [Jotai](https://jotai.org/) — atomic state management, great for fine-grained reactivity
+- **URL as state** — use search params (`useSearchParams`) for state that should be shareable or bookmarkable (filters, pagination, tabs)
+- ~~[Redux](https://redux.js.org/)~~ ❌ — excessive boilerplate (actions, reducers, selectors, middleware) for most applications. Modern alternatives achieve the same result with a fraction of the code.
+
 ### Concurrent Requests
 
-- Define the number of simultaneous requests.
+- Define the maximum number of simultaneous requests.
+- Use request queuing or throttling to avoid overwhelming the server.
+- Consider using `Promise.allSettled()` to handle multiple independent requests
+  gracefully — it ensures all promises complete regardless of individual failures.
 
 ### HTTP Request Retry
 
-### Response Caching (Retention, Clearing via a Button in Settings)
+Verify:
+
+- Is there a retry mechanism for failed HTTP requests?
+- Is the retry limited to idempotent requests (GET, PUT, DELETE) to avoid duplicating side effects?
+- Is there a maximum number of retries to prevent infinite loops?
+- Is exponential backoff used between retries to avoid server overload?
+
+💡 TIP:
+
+- TanStack Query has built-in retry support with configurable backoff
+- For manual implementation, consider:
+  - [npm/p-retry](https://www.npmjs.com/package/p-retry)
+  - [npm/axios-retry](https://www.npmjs.com/package/axios-retry)
+
+### Response Caching
+
+Verify:
+
+- Is there a caching strategy for HTTP responses?
+- Is there a way for the user to clear the cache (e.g., a button in settings)?
+- Is cache invalidation properly handled when data changes?
+- Is the cache retention time (TTL) defined and appropriate for the data type?
+
+💡 TIP:
+
+- TanStack Query provides built-in caching with configurable `staleTime` and `gcTime`
+- Consider using `Cache-Control` HTTP headers for browser-level caching
+- For offline support, consider [npm/idb-keyval](https://www.npmjs.com/package/idb-keyval) for IndexedDB-based storage
 
 ### Critical Path for Application Loading
+
+Verify:
+
+- Are critical CSS styles inlined in the HTML `<head>` to avoid render-blocking?
+- Are non-critical scripts loaded with `defer` or `async` attributes?
+- Is code splitting implemented to load only the necessary code for the initial route?
+- Are fonts preloaded using `<link rel="preload">`?
+
+💡 TIP:
+
+- Use Lighthouse to audit and measure the critical rendering path
+- Lazy-load routes and heavy components with `React.lazy()` and `Suspense`
+- Minimize the number of render-blocking resources
 
 ### Component Optimization
 
@@ -306,13 +574,204 @@ Zweryfikować:
 
 ### Loader
 
+Verify:
+
+- Is a loading indicator displayed during data fetching or page transitions?
+- Is a skeleton screen used for content areas to improve perceived performance?
+- Is there a minimum display time for loaders to prevent flickering?
+- Are error and empty states handled when loading completes?
+
+💡 TIP:
+
+- Use skeleton screens instead of spinners for better perceived performance
+- Consider [npm/react-content-loader](https://www.npmjs.com/package/react-content-loader) for SVG-based skeleton placeholders
+
 ### Test Navigation: "Back" Button in the Browser for SPA Applications
+
+Verify:
+
+- Does the "Back" button navigate to the previous route correctly?
+- Is the scroll position restored when navigating back?
+- Are form inputs preserved when navigating back (or intentionally cleared)?
+- Does deep linking work — can users share or bookmark a URL and land on the correct view?
+
+💡 TIP:
+
+- Test navigation flows manually: navigate forward several pages, then use the "Back" button to verify correct behavior at each step
+- Watch for unintended re-fetching or state loss on back navigation
 
 ### Tools
 
 - [React](https://react.dev/)
 - [Storybook](https://storybook.js.org/)
-- [Formik](https://formik.org/)
+- [React Hook Form](https://react-hook-form.com/) — performant, flexible form library with minimal re-renders
+- ~~[Formik](https://formik.org/)~~ ❌ — largely unmaintained, causes excessive re-renders on every keystroke, and has a larger bundle size compared to React Hook Form
+
+---
+
+## Accessibility (a11y)
+
+### WCAG 2.1 Compliance
+
+Verify:
+
+- Does the application meet at least **WCAG 2.1 Level AA** compliance?
+- Are all interactive elements (buttons, links, inputs) accessible?
+- Are images and icons accompanied by meaningful `alt` text or `aria-label`?
+- Are form fields associated with `<label>` elements?
+
+💡 TIP:
+
+- Reference: <https://www.w3.org/WAI/WCAG21/quickref/>
+- Level A = minimum, Level AA = recommended for commercial apps, Level AAA = highest
+
+### Keyboard Navigation
+
+Verify:
+
+- Can every interactive element be reached and operated using only the keyboard?
+- Is the focus order logical and follows the visual layout?
+- Is there a visible focus indicator (outline) on focused elements?
+- Are keyboard traps avoided (user can always Tab away from an element)?
+- Is a "Skip to main content" link provided for long navigation menus?
+
+### Screen Readers
+
+Verify:
+
+- Is semantic HTML used (`<nav>`, `<main>`, `<article>`, `<aside>`, `<header>`, `<footer>`) instead of generic `<div>`s?
+- Are ARIA roles and attributes used only when native HTML semantics are insufficient?
+- Are dynamic content changes announced to screen readers (using `aria-live` regions)?
+- Are decorative elements hidden from screen readers (`aria-hidden="true"`)?
+
+### Color Contrast
+
+Verify:
+
+- Does text meet the minimum contrast ratio of **4.5:1** (normal text) or **3:1** (large text)?
+- Is color not the only means of conveying information (e.g., error states also use icons or text)?
+
+💡 TIP:
+
+- Test contrast with <https://webaim.org/resources/contrastchecker/>
+
+### Tools
+
+- [axe-core](https://github.com/dequelabs/axe-core) — automated accessibility testing engine
+- [eslint-plugin-jsx-a11y](https://github.com/jsx-eslint/eslint-plugin-jsx-a11y) — ESLint rules for accessibility in JSX
+- [Lighthouse Accessibility Audit](https://developer.chrome.com/docs/lighthouse/accessibility/) — built into Chrome DevTools
+- [NVDA](https://www.nvaccess.org/) (Windows) / VoiceOver (macOS) — screen readers for manual testing
+
+---
+
+## SEO
+
+### Meta Tags
+
+Verify:
+
+- Does every page have a unique `<title>` and `<meta name="description">`?
+- Are Open Graph tags set for social media sharing?
+  - `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
+- Are Twitter Card tags set?
+  - `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+- Is the `<html lang="...">` attribute set to the correct language?
+- Is a canonical URL (`<link rel="canonical">`) defined to avoid duplicate content?
+
+### Structured Data
+
+Verify:
+
+- Is JSON-LD structured data added for relevant content types (articles, products, events, FAQ)?
+- Does the structured data pass validation?
+
+💡 TIP:
+
+- Reference: <https://schema.org/>
+- Validate at <https://validator.schema.org/>
+- Test with [Google Rich Results Test](https://search.google.com/test/rich-results)
+
+### Sitemap & robots.txt
+
+Verify:
+
+- Is a `sitemap.xml` generated and submitted to search engines?
+- Is `robots.txt` configured to allow indexing of public pages and block private ones?
+- Are non-production environments blocked from indexing (`noindex`, `nofollow` or `robots.txt` disallow)?
+
+### Core Web Vitals
+
+Verify:
+
+- **LCP (Largest Contentful Paint)** — is the main content visible within 2.5 seconds?
+- **INP (Interaction to Next Paint)** — is the page responsive to user input within 200ms?
+- **CLS (Cumulative Layout Shift)** — is the visual stability score below 0.1?
+
+💡 TIP:
+
+- Measure with [PageSpeed Insights](https://pagespeed.web.dev/) or Lighthouse
+- Monitor real-user data with [web-vitals](https://www.npmjs.com/package/web-vitals) library
+
+### Tools
+
+- [Lighthouse](https://developer.chrome.com/docs/lighthouse/) — built-in Chrome audit tool
+- [Google Search Console](https://search.google.com/search-console/) — monitor indexing and search performance
+- [npm/next-seo](https://www.npmjs.com/package/next-seo) — SEO management for Next.js applications
+
+---
+
+## Internationalization (i18n)
+
+### Multi-language Support
+
+Verify:
+
+- Are all user-facing strings externalized into translation files (not hardcoded)?
+- Is there a fallback language when a translation key is missing?
+- Are translations organized by feature/module for maintainability?
+- Is the language preference persisted (URL, cookie, or user settings)?
+
+💡 TIP:
+
+- Use tools:
+  - [i18next](https://www.i18next.com/) + [react-i18next](https://react.i18next.com/) — the most popular i18n framework
+  - [next-intl](https://next-intl.dev/) — for Next.js applications
+  - [FormatJS (react-intl)](https://formatjs.github.io/) — ICU message syntax support
+
+### RTL Layout Support
+
+Verify:
+
+- Does the layout flip correctly for RTL languages (Arabic, Hebrew, Persian)?
+- Are CSS logical properties used (`margin-inline-start` instead of `margin-left`)?
+- Is the `dir="rtl"` attribute set on the `<html>` element when needed?
+
+### Date, Number & Currency Formatting
+
+Verify:
+
+- Are dates formatted according to the user's locale (e.g., `MM/DD/YYYY` vs `DD.MM.YYYY`)?
+- Are numbers formatted with the correct decimal and thousands separators?
+- Are currencies displayed with the correct symbol and position?
+
+💡 TIP:
+
+- Use the built-in `Intl` API:
+  - `Intl.DateTimeFormat` for dates
+  - `Intl.NumberFormat` for numbers and currencies
+  - `Intl.RelativeTimeFormat` for relative time ("3 days ago")
+
+### Translation Workflow
+
+Verify:
+
+- Is there a defined process for adding new translations?
+- Are missing translations detected automatically (in CI or at runtime)?
+- Is there a review process for translations before they go live?
+
+💡 TIP:
+
+- Use translation management platforms: [Crowdin](https://crowdin.com/), [Lokalise](https://lokalise.com/), [Phrase](https://phrase.com/)
 
 ---
 
@@ -343,38 +802,46 @@ Verify:
 💡 TIP:
 
 - Use tools like:
-  - Apache Benchmark
-  - Artillery
-  - Locust
+  - [k6](https://k6.io/) — modern, developer-friendly load testing tool
+  - [Artillery](https://www.artillery.io/)
+  - [Apache Benchmark](https://httpd.apache.org/docs/2.4/programs/ab.html)
+  - [Locust](https://locust.io/)
 
 ### Tools
 
 - Unit Tests
+  - [Vitest](https://vitest.dev/) — fast, Vite-native test runner with Jest-compatible API
   - [Jest](https://jestjs.io/docs/testing-frameworks)
 - Component Tests
   - [RTL (React Testing Library)](https://testing-library.com/docs/react-testing-library/intro/)
-  - [Enzyme](https://enzymejs.github.io/enzyme/) ❌
+  - ~~[Enzyme](https://enzymejs.github.io/enzyme/)~~ ❌ — no longer maintained, does not support React 18+, and encourages testing implementation details rather than user behavior
 - End to End Tests
+  - [Playwright](https://playwright.dev/) — recommended, supports all major browsers with a single API
   - [Cucumber.js](https://cucumber.io/docs/guides/overview/)
-  - [Playwright](https://playwright.dev/)
-  - [Cypress](https://www.cypress.io/) ❌
   - [WebDriver.io](https://webdriver.io/)
+  - ~~[Cypress](https://www.cypress.io/)~~ ❌ — limited to Chromium-based browsers for full support, lacks native multi-tab testing, and has a restrictive free-tier dashboard
 - Code Coverage
-  - [npm/nyc](http://npmjs.com/package/nyc)
-  - [istanbul](https://istanbul.js.org/) ❌
+  - [npm/c8](https://www.npmjs.com/package/c8) — uses V8's built-in code coverage, fast and accurate
+  - [npm/nyc](https://www.npmjs.com/package/nyc)
+  - ~~[istanbul](https://istanbul.js.org/)~~ ❌ — succeeded by nyc and c8, which provide better integration and performance
 
 ---
 
 ## Codebase (Technical)
 
-### Bootstrap process
+### Bootstrap Process
 
-- Having one function that starts the application eg. `main()`
+- Having one function that starts the application e.g. `main()`
+- Implement **graceful shutdown** — handle `SIGTERM`/`SIGINT` signals to close database connections, finish pending requests, and clean up resources before the process exits
+- Add a **health check** endpoint (`/health` or `/healthz`) that returns the application's status — used by load balancers, orchestrators (Kubernetes), and monitoring tools
 
 ### Modules
 
-- ES2015 / AMD / CommonJS
-- [npm/webpack](https://www.npmjs.com/package/webpack)
+- ES Modules (ESM) — the standard module system for modern JavaScript
+- Bundlers:
+  - [Vite](https://vite.dev/) — fast dev server with HMR and optimized production builds
+  - [esbuild](https://esbuild.github.io/) — extremely fast JavaScript bundler
+  - ~~[webpack](https://webpack.js.org/)~~ ❌ — significantly slower build times compared to modern alternatives, complex configuration, and being gradually replaced in the ecosystem by Vite and Turbopack
 
 ### One Place for All Custom Error Types
 
@@ -383,12 +850,18 @@ Verify:
 
 ### Configuration
 
-- https://12factor.net/pl/config
+- <https://12factor.net/pl/config>
   - Having one place with configuration `config.js`
+- Validate environment variables at startup — fail fast if required variables are missing
+
+💡 TIP:
+
+- Use [t3-env](https://env.t3.gg/) for type-safe environment variable validation with Zod
+- Use [Zod](https://zod.dev/) schemas to validate and parse configuration at build/start time
 
 ### Component Events
 
-- Communication between components [npm/super-event-emitter](http://www.npmjs.com/package/super-event-emitter)
+- Communication between components [npm/super-event-emitter](https://www.npmjs.com/package/super-event-emitter)
 
 ---
 
@@ -396,17 +869,173 @@ Verify:
 
 ### Pipelines
 
-- UI Error Collector of runtime errors
-- Observability
+Every CI/CD pipeline should include these steps:
+
+1. **Install** — install dependencies (`npm ci` for deterministic installs)
+2. **Lint** — run ESLint and Prettier checks
+3. **Type Check** — run `tsc --noEmit`
+4. **Test** — run unit, component, and integration tests
+5. **Build** — create production build
+6. **E2E Tests** — run end-to-end tests against the built application
+7. **Deploy** — deploy to the target environment
+
+Additional checks:
+
+- **UI Error Collector** of runtime errors
+- **Observability**
   - Logs
   - Metrics
   - Traces
 
-### Test application rollback deployment
+💡 TIP:
 
-### Release process
+- Use [GitHub Actions](https://github.com/features/actions) for CI/CD
+- Use [Docker](https://www.docker.com/) for reproducible builds and deployments
+- Cache `node_modules` and build artifacts between pipeline runs to speed up CI
 
-- Use any tool for application deployment, e.g. [npm/release-it](http://www.npmjs.com/package/release-it)
+### Monitoring & Alerting
+
+#### Error Tracking
+
+Verify:
+
+- Are runtime errors automatically captured and reported?
+- Is source map upload configured so stack traces show original code?
+- Are errors grouped and deduplicated to avoid noise?
+
+💡 TIP:
+
+- Use tools:
+  - [Sentry](https://sentry.io/) — real-time error tracking with release tracking and performance monitoring
+  - [Bugsnag](https://www.bugsnag.com/) — error monitoring with stability scores
+
+#### Application Performance Monitoring (APM)
+
+Verify:
+
+- Are response times and throughput tracked for API endpoints?
+- Are slow queries and bottlenecks identified?
+- Are custom metrics defined for business-critical operations?
+
+💡 TIP:
+
+- Use tools:
+  - [Datadog](https://www.datadoghq.com/)
+  - [New Relic](https://newrelic.com/)
+  - [Grafana](https://grafana.com/) + [Prometheus](https://prometheus.io/) — open-source alternative
+
+#### Uptime Monitoring
+
+Verify:
+
+- Is the application's availability monitored from external locations?
+- Are stakeholders alerted when downtime occurs?
+
+💡 TIP:
+
+- Use tools:
+  - [Better Uptime](https://betteruptime.com/)
+  - [Pingdom](https://www.pingdom.com/)
+  - [UptimeRobot](https://uptimerobot.com/) — free tier available
+
+#### Alerting Rules
+
+Verify:
+
+- Are alerting thresholds defined (error rate, response time, CPU/memory usage)?
+- Is there a clear escalation path (who gets paged first, how to escalate)?
+- Are alerts actionable — does each alert have a runbook or link to documentation?
+
+### Test Application Rollback Deployment
+
+Verify:
+
+- Can the application be rolled back to a previous version quickly?
+- Is there an automated rollback mechanism in case of a failed deployment?
+- Have you tested the rollback procedure to ensure it works correctly?
+
+💡 TIP:
+
+- Practice rollback deployments regularly — not just when something goes wrong
+- Ensure database migrations are backward-compatible so rollback doesn't break the data layer
+- Use blue-green or canary deployment strategies to minimize rollback risk
+
+### Release Process
+
+- Follow [Semantic Versioning](https://semver.org/) (MAJOR.MINOR.PATCH)
+- Use [Conventional Commits](https://www.conventionalcommits.org/) for consistent commit messages (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`)
+- Auto-generate changelogs from commit history
+- Use tools for application deployment:
+  - [npm/release-it](https://www.npmjs.com/package/release-it)
+  - [npm/changesets](https://www.npmjs.com/package/@changesets/cli) — for monorepo versioning
+  - [npm/semantic-release](https://www.npmjs.com/package/semantic-release) — fully automated version management and publishing
+
+---
+
+## Developer Experience (DX)
+
+### EditorConfig
+
+- Add an `.editorconfig` file to ensure consistent formatting across different editors and IDEs
+
+```ini
+root = true
+
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+```
+
+- Reference: <https://editorconfig.org/>
+
+### Monorepo
+
+Verify:
+
+- Does the project benefit from a monorepo structure (shared code, multiple packages/apps)?
+- Is a monorepo tool configured to manage dependencies and task orchestration?
+
+💡 TIP:
+
+- Use tools:
+  - [Turborepo](https://turbo.build/) — fast, incremental builds with remote caching
+  - [Nx](https://nx.dev/) — smart builds, code generation, and dependency graph visualization
+
+### Dev Containers
+
+- Define a `.devcontainer/` configuration for consistent development environments
+- Ensures all team members have the same tools, extensions, and settings
+
+💡 TIP:
+
+- Reference: <https://containers.dev/>
+- Supported by VS Code, GitHub Codespaces, and JetBrains IDEs
+
+### Documentation
+
+- **ADRs (Architecture Decision Records)** — document significant technical decisions with context, options considered, and rationale
+  - Store in `docs/adr/` directory
+  - Reference: <https://adr.github.io/>
+- **Onboarding guide** — a README or wiki page that helps new developers set up the project and understand the architecture
+- **API documentation** — keep API docs close to the code (OpenAPI/Swagger)
+
+### Dependency Updates
+
+Verify:
+
+- Is there an automated process for updating dependencies?
+- Are major version updates reviewed manually before merging?
+- Are dependency update PRs tested by CI before merging?
+
+💡 TIP:
+
+- Use tools:
+  - [Renovate](https://www.mend.io/renovate/) — highly configurable, supports grouping and auto-merge for patch updates
+  - [Dependabot](https://docs.github.com/en/code-security/dependabot) — built into GitHub, simple setup
 
 ---
 
