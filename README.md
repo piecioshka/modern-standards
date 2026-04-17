@@ -19,35 +19,7 @@ If you're missing answers to questions like:
 
 <!-- toc -->
 
-- [Tools](#tools)
-  * [Husky](#husky)
-  * [Lint-staged](#lint-staged)
-  * [Prettier](#prettier)
-  * [TypeScript](#typescript)
-  * [ESLint](#eslint)
-  * [Utilities](#utilities)
-  * [HTTP Request](#http-request)
-  * [Changelog](#changelog)
-- [Security](#security)
-  * [OWASP Top 10](#owasp-top-10)
-  * [Content Security Policy (CSP)](#content-security-policy-csp)
-  * [HTTPS](#https)
-  * [Authentication & Authorization](#authentication--authorization)
-  * [Secrets Management](#secrets-management)
-  * [Dependency Auditing](#dependency-auditing)
-- [Error Handling](#error-handling)
-  * [User Input Data](#user-input-data)
-  * [Error Page](#error-page)
-  * [HTTP Errors: Following the REST Convention](#http-errors-following-the-rest-convention)
-  * [HTTP Errors: Defined by the Back-end](#http-errors-defined-by-the-back-end)
-  * [HTTP Errors: Malformed Responses](#http-errors-malformed-responses)
-- [Backend](#backend)
-  * [Local Resources](#local-resources)
-  * [Log Management](#log-management)
-  * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
-  * [API Design](#api-design)
-  * [Database](#database)
-  * [Tools](#tools-1)
+- [What Every Modern Website Needs](#what-every-modern-website-needs)
 - [Frontend (UI)](#frontend-ui)
   * [State Management](#state-management)
   * [Concurrent Requests](#concurrent-requests)
@@ -57,39 +29,80 @@ If you're missing answers to questions like:
   * [Component Optimization](#component-optimization)
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
-  * [Tools](#tools-2)
+  * [Tools](#tools)
 - [Accessibility (a11y)](#accessibility-a11y)
   * [WCAG 2.1 Compliance](#wcag-21-compliance)
   * [Keyboard Navigation](#keyboard-navigation)
   * [Screen Readers](#screen-readers)
   * [Color Contrast](#color-contrast)
-  * [Tools](#tools-3)
+  * [Tools](#tools-1)
 - [SEO](#seo)
   * [Meta Tags](#meta-tags)
   * [Structured Data](#structured-data)
   * [Sitemap & robots.txt](#sitemap--robotstxt)
   * [Core Web Vitals](#core-web-vitals)
-  * [Tools](#tools-4)
+  * [Tools](#tools-2)
 - [Internationalization (i18n)](#internationalization-i18n)
   * [Multi-language Support](#multi-language-support)
   * [RTL Layout Support](#rtl-layout-support)
   * [Date, Number & Currency Formatting](#date-number--currency-formatting)
   * [Translation Workflow](#translation-workflow)
+- [Backend](#backend)
+  * [Local Resources](#local-resources)
+  * [Log Management](#log-management)
+  * [SSR (Server-Side Rendering)](#ssr-server-side-rendering)
+  * [API Design](#api-design)
+    + [REST Conventions](#rest-conventions)
+    + [API Documentation](#api-documentation)
+    + [Rate Limiting](#rate-limiting)
+    + [Request Validation](#request-validation)
+  * [Database](#database)
+    + [Migrations](#migrations)
+    + [Connection Pooling](#connection-pooling)
+    + [Backups & Restore](#backups--restore)
+    + [ORM](#orm)
+  * [Tools](#tools-3)
+- [Error Handling](#error-handling)
+  * [User Input Data](#user-input-data)
+  * [Error Page](#error-page)
+  * [HTTP Errors: Following the REST Convention](#http-errors-following-the-rest-convention)
+  * [HTTP Errors: Defined by the Back-end](#http-errors-defined-by-the-back-end)
+  * [HTTP Errors: Malformed Responses](#http-errors-malformed-responses)
+- [Security](#security)
+  * [OWASP Top 10](#owasp-top-10)
+  * [Content Security Policy (CSP)](#content-security-policy-csp)
+  * [HTTPS](#https)
+  * [Authentication & Authorization](#authentication--authorization)
+  * [Secrets Management](#secrets-management)
+  * [Dependency Auditing](#dependency-auditing)
 - [Tests](#tests)
   * [Offline Connection Tests](#offline-connection-tests)
   * [Performance Tests](#performance-tests)
-  * [Tools](#tools-5)
+  * [Tools](#tools-4)
+- [Infrastructure](#infrastructure)
+  * [Pipelines](#pipelines)
+  * [Monitoring & Alerting](#monitoring--alerting)
+    + [Error Tracking](#error-tracking)
+    + [Application Performance Monitoring (APM)](#application-performance-monitoring-apm)
+    + [Uptime Monitoring](#uptime-monitoring)
+    + [Alerting Rules](#alerting-rules)
+  * [Test Application Rollback Deployment](#test-application-rollback-deployment)
+  * [Release Process](#release-process)
 - [Codebase (Technical)](#codebase-technical)
   * [Bootstrap Process](#bootstrap-process)
   * [Modules](#modules)
   * [One Place for All Custom Error Types](#one-place-for-all-custom-error-types)
   * [Configuration](#configuration)
   * [Component Events](#component-events)
-- [Infrastructure](#infrastructure)
-  * [Pipelines](#pipelines)
-  * [Monitoring & Alerting](#monitoring--alerting)
-  * [Test Application Rollback Deployment](#test-application-rollback-deployment)
-  * [Release Process](#release-process)
+- [Tools](#tools-5)
+  * [Husky](#husky)
+  * [Lint-staged](#lint-staged)
+  * [Prettier](#prettier)
+  * [TypeScript](#typescript)
+  * [ESLint](#eslint)
+  * [Utilities](#utilities)
+  * [HTTP Request](#http-request)
+  * [Changelog](#changelog)
 - [Developer Experience (DX)](#developer-experience-dx)
   * [EditorConfig](#editorconfig)
   * [Monorepo](#monorepo)
@@ -105,401 +118,25 @@ If you're missing answers to questions like:
 
 ---
 
-## Tools
-
-### Husky
-
-- <https://typicode.github.io/husky/>
-
-### Lint-staged
-
-- <https://github.com/okonet/lint-staged>
-
-### Prettier
-
-- <https://prettier.io/>
-
-### TypeScript
-
-- Enable "Strict Mode" in `tsconfig.json`
-
-  ```json
-  {
-    "compilerOptions": {
-      "strict": true
-    }
-  }
-  ```
-
-### ESLint
-
-🕹️ [Playground](https://eslint.org/play/)
-
-```js
-'no-unsafe-optional-chaining': 'error',
-'prefer-arrow-callback': 'error',
-'no-param-reassign': 'error',
-'no-extra-boolean-cast': 'error',
-```
-
-plugins:
-
-- [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
-- [eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)
-  - [consistent-type-specifier-style](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/consistent-type-specifier-style.md)
-    ```js
-    'import/consistent-type-specifier-style': [
-      'error',
-      {
-        mode: 'prefer-top-level',
-      },
-    ],
-    ```
-  - [enforce-node-protocol-usage](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/enforce-node-protocol-usage.md)
-    ```js
-    'import/enforce-node-protocol-usage': 'error',
-    ```
-  - [newline-after-import](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md)
-    ```js
-    'import/newline-after-import': ["error", { "count": 1 }],
-    ```
-  - [no-extraneous-dependencies](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md)
-    ```js
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: false,
-        optionalDependencies: false,
-        peerDependencies: false,
-      },
-    ],
-    ```
-  - [no-relative-parent-imports](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-relative-parent-imports.md)
-    ```js
-    'import/no-relative-parent-imports': 'error',
-    ```
-  - [no-self-import](https://github.com/import-js/eslint-plugin-import)
-    ```js
-    'import/no-self-import': 'error',
-    ```
-  - [order](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
-    ```js
-    'import/order': [
-      'error',
-      {
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'unknown',
-          'parent',
-          'sibling',
-          'index',
-          'object',
-          'type',
-        ],
-        'newlines-between': 'always',
-      },
-    ],
-    ```
-- [eslint-plugin-no-relative-import-paths](https://github.com/MelvinVermeer/eslint-plugin-no-relative-import-paths)
-- [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react)
-- [eslint-plugin-regexp](https://github.com/ota-meshi/eslint-plugin-regexp)
-- [eslint-plugin-smells](https://github.com/elijahmanor/eslint-plugin-smells)
-- [eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
-- [eslint-plugin-unused-imports](https://github.com/sweepline/eslint-plugin-unused-imports)
-
-TypeScript plugins:
-
-- [@typescript-eslint/array-type](https://typescript-eslint.io/rules/array-type/)
-- [@typescript-eslint/explicit-member-accessibility](https://typescript-eslint.io/rules/explicit-member-accessibility/)
-- [@typescript-eslint/no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises/)
-- [@typescript-eslint/no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
-- [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
-  - <https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports>
-
-### Utilities
-
-- [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
-
-### HTTP Request
-
-- [TanStack Query (React Query)](https://tanstack.com/query/latest) - declarative data fetching with caching, refetching, and synchronization
-- [Apollo GraphQL](https://www.apollographql.com/) - for GraphQL APIs
-- ~~[Axios](https://axios-http.com/)~~ ❌ — the native `fetch` API is now well-supported across all modern browsers and Node.js 18+, making Axios largely unnecessary. `fetch` is lighter, has no dependencies, and supports streaming natively.
-
-### Changelog
-
-- [changelog-all-possibilities](https://github.com/piecioshka/changelog-all-possibilities)
-- [🇵🇱 Blogpost: husky-commitlint-git-changelog](https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html)
-
----
-
-## Security
-
-### OWASP Top 10
-
-Verify:
-
-- Are you protected against **Cross-Site Scripting (XSS)**? Sanitize all user-generated content before rendering.
-- Are you protected against **Cross-Site Request Forgery (CSRF)**? Use anti-CSRF tokens for state-changing operations.
-- Are you protected against **SQL Injection**? Use parameterized queries or ORM — never concatenate user input into queries.
-- Are you protected against **Broken Authentication**? Enforce strong password policies, implement account lockout, and use MFA where possible.
-- Are you protected against **Sensitive Data Exposure**? Encrypt data at rest and in transit, never log sensitive information.
-
-💡 TIP:
-
-- Review the full list: <https://owasp.org/www-project-top-ten/>
-- Run automated scans with [OWASP ZAP](https://www.zaproxy.org/)
-
-### Content Security Policy (CSP)
-
-Verify:
-
-- Is a `Content-Security-Policy` header configured to restrict which resources (scripts, styles, images) can be loaded?
-- Is `script-src 'unsafe-inline'` avoided? Use nonces or hashes instead.
-- Is `frame-ancestors` set to prevent clickjacking?
-
-💡 TIP:
-
-- Start with a report-only policy (`Content-Security-Policy-Report-Only`) to identify violations before enforcing
-- Use [helmet](https://www.npmjs.com/package/helmet) in Node.js to set security headers easily
-- Test your CSP at <https://csp-evaluator.withgoogle.com/>
-
-### HTTPS
-
-Verify:
-
-- Is HTTPS enforced in production (HTTP redirects to HTTPS)?
-- Is HSTS (HTTP Strict Transport Security) enabled with a sufficient `max-age`?
-- Are all external resources (APIs, CDNs, fonts) loaded over HTTPS?
-
-### Authentication & Authorization
-
-Verify:
-
-- Are JWT tokens stored securely (prefer `httpOnly` cookies over `localStorage`)?
-- Do tokens have a reasonable expiration time?
-- Is there a token refresh mechanism?
-- Are API endpoints protected with proper authorization checks (not just authentication)?
-- Is role-based or attribute-based access control (RBAC/ABAC) implemented consistently?
-
-💡 TIP:
-
-- Consider using established providers: [Auth.js (NextAuth)](https://authjs.dev/), [Clerk](https://clerk.com/), [Auth0](https://auth0.com/)
-- Never implement your own cryptography — use well-tested libraries
-
-### Secrets Management
-
-Verify:
-
-- Are secrets (API keys, database credentials, tokens) excluded from the repository?
-- Is `.env` listed in `.gitignore`?
-- Are production secrets managed through a dedicated service, not environment files?
-
-💡 TIP:
-
-- Use [npm/dotenv](https://www.npmjs.com/package/dotenv) for local development
-- Use a secrets manager for production: AWS Secrets Manager, HashiCorp Vault, Doppler
-- Run [git-secrets](https://github.com/awslabs/git-secrets) or [gitleaks](https://github.com/gitleaks/gitleaks) in CI to prevent accidental commits
-
-### Dependency Auditing
-
-Verify:
-
-- Is `npm audit` (or equivalent) run regularly?
-- Are known vulnerabilities in dependencies addressed promptly?
-- Is there a policy for handling critical vs. low-severity vulnerabilities?
-
-💡 TIP:
-
-- Use tools:
-  - `npm audit` — built-in, zero setup
-  - [Snyk](https://snyk.io/) — continuous monitoring with PR fixes
-  - [Socket](https://socket.dev/) — detects supply chain attacks (typosquatting, install scripts)
-
----
-
-## Error Handling
-
-### User Input Data
-
-Verify:
-
-- Is everything that the user enters into any form field being sanitized?
-
-💡 TIP:
-
-- Use tools:
-  - [npm/sanitize-html](https://www.npmjs.com/package/sanitize-html)
-  - [npm/escape-html](https://www.npmjs.com/package/escape-html)
-
-### Error Page
-
-Verify:
-
-- Is there a dedicated error page built for the application?
-- Are we redirecting the user to an error page when they don't have access
-  to the displayed resource? Examples:
-  - the page no longer exists,
-  - or the user wants to access a page for logged-in users while being logged out
-
-### HTTP Errors: Following the REST Convention
-
-Verify:
-
-- Are we handling problems with obtaining a response due to an HTTP error?
-  - e.g., when `HTTP Status 500 - Internal Server Error` occurs
-
-### HTTP Errors: Defined by the Back-end
-
-Verify:
-
-- Are we handling custom errors defined on the server side?
-  - e.g., when a resource is not found and we receive a JSON response
-    with an `error` key and an error code
-
-💡 TIP:
-
-- Obtain all error codes defined on the server side of the client
-  application you are developing
-
-### HTTP Errors: Malformed Responses
-
-Verify:
-
-- Is the response in the correct format?
-
-💡 TIP:
-
-- Use an Output Schema or a Swagger contract where the expected response
-  format is defined
-- Use tools:
-  - ajv — to build a schema for the expected response
-
----
-
-## Backend
-
-### Local Resources
-
-- Change addresses to local ones to avoid leaving the server room.
-- Switch the protocol to HTTP to avoid encrypting local requests.
-
-### Log Management
-
-- Use structured logging with log levels (debug, info, warn, error)
-- Include contextual information (request ID, user ID, timestamp) in log entries
-- Use tools:
-  - [npm/pino](https://www.npmjs.com/package/pino) — fast, low-overhead JSON logger
-  - [npm/winston](https://www.npmjs.com/package/winston) — versatile logger with multiple transports
-  - ~~[npm/debug](https://www.npmjs.com/package/debug)~~ ❌ — suitable only for development-time debugging, not for production logging. Lacks structured output, log levels, and transport support.
-
-### SSR (Server-Side Rendering)
-
-Verify:
-
-- Does the application benefit from SSR? Consider it when:
-  - SEO is important (public-facing content pages)
-  - First Contentful Paint (FCP) performance is critical
-  - Users on slow devices or networks need faster initial page loads
-- Are you handling hydration mismatches between server and client?
-- Is sensitive data (tokens, secrets) properly excluded from server-rendered HTML?
-
-💡 TIP:
-
-- Use frameworks with built-in SSR support:
-  - [Next.js](https://nextjs.org/) — for React applications
-  - [Nuxt](https://nuxt.com/) — for Vue applications
-  - [Astro](https://astro.build/) — for content-heavy sites with minimal client-side JS
-
-### API Design
-
-#### REST Conventions
-
-Verify:
-
-- Are resource names plural and lowercase? (e.g., `/api/users`, not `/api/User`)
-- Are HTTP methods used correctly? (`GET` for reading, `POST` for creating, `PUT`/`PATCH` for updating, `DELETE` for removing)
-- Is API versioning in place? (e.g., `/api/v1/users`)
-- Is pagination implemented for list endpoints? (using `page`/`limit` or cursor-based)
-- Are consistent response envelopes used? (e.g., `{ data, meta, errors }`)
-
-#### API Documentation
-
-Verify:
-
-- Is there an OpenAPI/Swagger specification for the API?
-- Is the documentation auto-generated from code or kept in sync manually?
-- Is there a live interactive playground (e.g., Swagger UI)?
-
-💡 TIP:
-
-- Use tools:
-  - [Swagger UI](https://swagger.io/tools/swagger-ui/)
-  - [Redoc](https://redocly.com/)
-
-#### Rate Limiting
-
-Verify:
-
-- Are API endpoints protected against abuse with rate limiting?
-- Are rate limit headers returned to clients? (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
-
-💡 TIP:
-
-- Use [npm/express-rate-limit](https://www.npmjs.com/package/express-rate-limit) for Express.js
-
-#### Request Validation
-
-Verify:
-
-- Are all incoming request bodies, query params, and path params validated?
-- Are validation errors returned with clear, actionable messages?
-
-💡 TIP:
-
-- Use tools:
-  - [Zod](https://zod.dev/) — TypeScript-first schema validation with static type inference
-  - ~~[Joi](https://joi.dev/)~~ ❌ — no native TypeScript type inference, heavier API surface, and less integration with modern TypeScript-first workflows
-
-### Database
-
-#### Migrations
-
-Verify:
-
-- Is database schema versioned through migration files?
-- Can migrations be rolled back safely?
-- Are migrations run automatically in the CI/CD pipeline?
-
-#### Connection Pooling
-
-Verify:
-
-- Is a connection pool configured to avoid exhausting database connections?
-- Are pool size limits set appropriately for the expected load?
-
-#### Backups & Restore
-
-Verify:
-
-- Are automated backups configured and running?
-- Has the restore procedure been tested at least once?
-- Is the backup retention policy defined (daily, weekly, monthly)?
-
-#### ORM
-
-- [Prisma](https://www.prisma.io/) — type-safe database client with auto-generated types and migrations
-- [Drizzle](https://orm.drizzle.team/) — lightweight, SQL-like TypeScript ORM with zero dependencies
-
-### Tools
-
-- [Node.js](https://nodejs.org/en)
-  - [npm/express](https://www.npmjs.com/package/express)
-  - [npm/cors](https://www.npmjs.com/package/cors)
-  - [npm/helmet](https://www.npmjs.com/package/helmet)
-  - [npm/morgan](https://www.npmjs.com/package/morgan)
+## What Every Modern Website Needs
+
+Beyond the technical stuff, there are a few things every site shown to users in Europe should have. In plain language:
+
+- **Privacy Policy** — what data you collect, why, and how to delete it. One page, linked from the footer.
+- **Cookie banner** — if you use analytics, ads, or any third-party tracking. Users must be able to **reject** as easily as accept. Don't load the tracking scripts until they click accept.
+- **Contact info** — visible email/address. In Germany & Austria this is required ("Impressum") on every page.
+- **Terms of Service** — if users sign up, pay, or upload content.
+- **Accessibility** — keyboard navigation works, contrast is readable, screen readers can parse the page. From mid-2025 it's legally required for most B2C sites in the EU.
+- **HTTPS everywhere** — no exceptions.
+- **A way to delete the account** — if users can register, they must be able to leave.
+
+💡 Tools that handle most of this for you:
+
+- Cookie banners: [orestbida/cookieconsent](https://github.com/orestbida/cookieconsent) (free, open source), [Cookiebot](https://www.cookiebot.com/), [iubenda](https://www.iubenda.com/) (paid, also generate policies).
+- Privacy-friendly analytics (no banner needed if configured right): [Plausible](https://plausible.io/), [Umami](https://umami.is/), [Fathom](https://usefathom.com/).
+- Privacy policy generators: [iubenda](https://www.iubenda.com/), [TermsFeed](https://www.termsfeed.com/), [Termly](https://termly.io/).
+- Payments with VAT handled for you: [Paddle](https://www.paddle.com/), [Lemon Squeezy](https://www.lemonsqueezy.com/), [Stripe Tax](https://stripe.com/tax).
+- Accessibility checks: [axe DevTools](https://www.deque.com/axe/devtools/), [Lighthouse](https://developer.chrome.com/docs/lighthouse/), [Pa11y](https://pa11y.org/).
 
 ---
 
@@ -775,6 +412,274 @@ Verify:
 
 ---
 
+## Backend
+
+### Local Resources
+
+- Change addresses to local ones to avoid leaving the server room.
+- Switch the protocol to HTTP to avoid encrypting local requests.
+
+### Log Management
+
+- Use structured logging with log levels (debug, info, warn, error)
+- Include contextual information (request ID, user ID, timestamp) in log entries
+- Use tools:
+  - [npm/pino](https://www.npmjs.com/package/pino) — fast, low-overhead JSON logger
+  - [npm/winston](https://www.npmjs.com/package/winston) — versatile logger with multiple transports
+  - ~~[npm/debug](https://www.npmjs.com/package/debug)~~ ❌ — suitable only for development-time debugging, not for production logging. Lacks structured output, log levels, and transport support.
+
+### SSR (Server-Side Rendering)
+
+Verify:
+
+- Does the application benefit from SSR? Consider it when:
+  - SEO is important (public-facing content pages)
+  - First Contentful Paint (FCP) performance is critical
+  - Users on slow devices or networks need faster initial page loads
+- Are you handling hydration mismatches between server and client?
+- Is sensitive data (tokens, secrets) properly excluded from server-rendered HTML?
+
+💡 TIP:
+
+- Use frameworks with built-in SSR support:
+  - [Next.js](https://nextjs.org/) — for React applications
+  - [Nuxt](https://nuxt.com/) — for Vue applications
+  - [Astro](https://astro.build/) — for content-heavy sites with minimal client-side JS
+
+### API Design
+
+#### REST Conventions
+
+Verify:
+
+- Are resource names plural and lowercase? (e.g., `/api/users`, not `/api/User`)
+- Are HTTP methods used correctly? (`GET` for reading, `POST` for creating, `PUT`/`PATCH` for updating, `DELETE` for removing)
+- Is API versioning in place? (e.g., `/api/v1/users`)
+- Is pagination implemented for list endpoints? (using `page`/`limit` or cursor-based)
+- Are consistent response envelopes used? (e.g., `{ data, meta, errors }`)
+
+#### API Documentation
+
+Verify:
+
+- Is there an OpenAPI/Swagger specification for the API?
+- Is the documentation auto-generated from code or kept in sync manually?
+- Is there a live interactive playground (e.g., Swagger UI)?
+
+💡 TIP:
+
+- Use tools:
+  - [Swagger UI](https://swagger.io/tools/swagger-ui/)
+  - [Redoc](https://redocly.com/)
+
+#### Rate Limiting
+
+Verify:
+
+- Are API endpoints protected against abuse with rate limiting?
+- Are rate limit headers returned to clients? (`X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset`)
+
+💡 TIP:
+
+- Use [npm/express-rate-limit](https://www.npmjs.com/package/express-rate-limit) for Express.js
+
+#### Request Validation
+
+Verify:
+
+- Are all incoming request bodies, query params, and path params validated?
+- Are validation errors returned with clear, actionable messages?
+
+💡 TIP:
+
+- Use tools:
+  - [Zod](https://zod.dev/) — TypeScript-first schema validation with static type inference
+  - ~~[Joi](https://joi.dev/)~~ ❌ — no native TypeScript type inference, heavier API surface, and less integration with modern TypeScript-first workflows
+
+### Database
+
+#### Migrations
+
+Verify:
+
+- Is database schema versioned through migration files?
+- Can migrations be rolled back safely?
+- Are migrations run automatically in the CI/CD pipeline?
+
+#### Connection Pooling
+
+Verify:
+
+- Is a connection pool configured to avoid exhausting database connections?
+- Are pool size limits set appropriately for the expected load?
+
+#### Backups & Restore
+
+Verify:
+
+- Are automated backups configured and running?
+- Has the restore procedure been tested at least once?
+- Is the backup retention policy defined (daily, weekly, monthly)?
+
+#### ORM
+
+- [Prisma](https://www.prisma.io/) — type-safe database client with auto-generated types and migrations
+- [Drizzle](https://orm.drizzle.team/) — lightweight, SQL-like TypeScript ORM with zero dependencies
+
+### Tools
+
+- [Node.js](https://nodejs.org/en)
+  - [npm/express](https://www.npmjs.com/package/express)
+  - [npm/cors](https://www.npmjs.com/package/cors)
+  - [npm/helmet](https://www.npmjs.com/package/helmet)
+  - [npm/morgan](https://www.npmjs.com/package/morgan)
+
+---
+
+## Error Handling
+
+### User Input Data
+
+Verify:
+
+- Is everything that the user enters into any form field being sanitized?
+
+💡 TIP:
+
+- Use tools:
+  - [npm/sanitize-html](https://www.npmjs.com/package/sanitize-html)
+  - [npm/escape-html](https://www.npmjs.com/package/escape-html)
+
+### Error Page
+
+Verify:
+
+- Is there a dedicated error page built for the application?
+- Are we redirecting the user to an error page when they don't have access
+  to the displayed resource? Examples:
+  - the page no longer exists,
+  - or the user wants to access a page for logged-in users while being logged out
+
+### HTTP Errors: Following the REST Convention
+
+Verify:
+
+- Are we handling problems with obtaining a response due to an HTTP error?
+  - e.g., when `HTTP Status 500 - Internal Server Error` occurs
+
+### HTTP Errors: Defined by the Back-end
+
+Verify:
+
+- Are we handling custom errors defined on the server side?
+  - e.g., when a resource is not found and we receive a JSON response
+    with an `error` key and an error code
+
+💡 TIP:
+
+- Obtain all error codes defined on the server side of the client
+  application you are developing
+
+### HTTP Errors: Malformed Responses
+
+Verify:
+
+- Is the response in the correct format?
+
+💡 TIP:
+
+- Use an Output Schema or a Swagger contract where the expected response
+  format is defined
+- Use tools:
+  - ajv — to build a schema for the expected response
+
+---
+
+## Security
+
+### OWASP Top 10
+
+Verify:
+
+- Are you protected against **Cross-Site Scripting (XSS)**? Sanitize all user-generated content before rendering.
+- Are you protected against **Cross-Site Request Forgery (CSRF)**? Use anti-CSRF tokens for state-changing operations.
+- Are you protected against **SQL Injection**? Use parameterized queries or ORM — never concatenate user input into queries.
+- Are you protected against **Broken Authentication**? Enforce strong password policies, implement account lockout, and use MFA where possible.
+- Are you protected against **Sensitive Data Exposure**? Encrypt data at rest and in transit, never log sensitive information.
+
+💡 TIP:
+
+- Review the full list: <https://owasp.org/www-project-top-ten/>
+- Run automated scans with [OWASP ZAP](https://www.zaproxy.org/)
+
+### Content Security Policy (CSP)
+
+Verify:
+
+- Is a `Content-Security-Policy` header configured to restrict which resources (scripts, styles, images) can be loaded?
+- Is `script-src 'unsafe-inline'` avoided? Use nonces or hashes instead.
+- Is `frame-ancestors` set to prevent clickjacking?
+
+💡 TIP:
+
+- Start with a report-only policy (`Content-Security-Policy-Report-Only`) to identify violations before enforcing
+- Use [helmet](https://www.npmjs.com/package/helmet) in Node.js to set security headers easily
+- Test your CSP at <https://csp-evaluator.withgoogle.com/>
+
+### HTTPS
+
+Verify:
+
+- Is HTTPS enforced in production (HTTP redirects to HTTPS)?
+- Is HSTS (HTTP Strict Transport Security) enabled with a sufficient `max-age`?
+- Are all external resources (APIs, CDNs, fonts) loaded over HTTPS?
+
+### Authentication & Authorization
+
+Verify:
+
+- Are JWT tokens stored securely (prefer `httpOnly` cookies over `localStorage`)?
+- Do tokens have a reasonable expiration time?
+- Is there a token refresh mechanism?
+- Are API endpoints protected with proper authorization checks (not just authentication)?
+- Is role-based or attribute-based access control (RBAC/ABAC) implemented consistently?
+
+💡 TIP:
+
+- Consider using established providers: [Auth.js (NextAuth)](https://authjs.dev/), [Clerk](https://clerk.com/), [Auth0](https://auth0.com/)
+- Never implement your own cryptography — use well-tested libraries
+
+### Secrets Management
+
+Verify:
+
+- Are secrets (API keys, database credentials, tokens) excluded from the repository?
+- Is `.env` listed in `.gitignore`?
+- Are production secrets managed through a dedicated service, not environment files?
+
+💡 TIP:
+
+- Use [npm/dotenv](https://www.npmjs.com/package/dotenv) for local development
+- Use a secrets manager for production: AWS Secrets Manager, HashiCorp Vault, Doppler
+- Run [git-secrets](https://github.com/awslabs/git-secrets) or [gitleaks](https://github.com/gitleaks/gitleaks) in CI to prevent accidental commits
+
+### Dependency Auditing
+
+Verify:
+
+- Is `npm audit` (or equivalent) run regularly?
+- Are known vulnerabilities in dependencies addressed promptly?
+- Is there a policy for handling critical vs. low-severity vulnerabilities?
+
+💡 TIP:
+
+- Use tools:
+  - `npm audit` — built-in, zero setup
+  - [Snyk](https://snyk.io/) — continuous monitoring with PR fixes
+  - [Socket](https://socket.dev/) — detects supply chain attacks (typosquatting, install scripts)
+
+---
+
 ## Tests
 
 ### Offline Connection Tests
@@ -824,44 +729,6 @@ Verify:
   - [npm/c8](https://www.npmjs.com/package/c8) — uses V8's built-in code coverage, fast and accurate
   - [npm/nyc](https://www.npmjs.com/package/nyc)
   - ~~[istanbul](https://istanbul.js.org/)~~ ❌ — succeeded by nyc and c8, which provide better integration and performance
-
----
-
-## Codebase (Technical)
-
-### Bootstrap Process
-
-- Having one function that starts the application e.g. `main()`
-- Implement **graceful shutdown** — handle `SIGTERM`/`SIGINT` signals to close database connections, finish pending requests, and clean up resources before the process exits
-- Add a **health check** endpoint (`/health` or `/healthz`) that returns the application's status — used by load balancers, orchestrators (Kubernetes), and monitoring tools
-
-### Modules
-
-- ES Modules (ESM) — the standard module system for modern JavaScript
-- Bundlers:
-  - [Vite](https://vite.dev/) — fast dev server with HMR and optimized production builds
-  - [esbuild](https://esbuild.github.io/) — extremely fast JavaScript bundler
-  - ~~[webpack](https://webpack.js.org/)~~ ❌ — significantly slower build times compared to modern alternatives, complex configuration, and being gradually replaced in the ecosystem by Vite and Turbopack
-
-### One Place for All Custom Error Types
-
-- Define all errors in a single location to avoid scattering them across the application.
-- Example: `src/errors/index.ts`
-
-### Configuration
-
-- <https://12factor.net/pl/config>
-  - Having one place with configuration `config.js`
-- Validate environment variables at startup — fail fast if required variables are missing
-
-💡 TIP:
-
-- Use [t3-env](https://env.t3.gg/) for type-safe environment variable validation with Zod
-- Use [Zod](https://zod.dev/) schemas to validate and parse configuration at build/start time
-
-### Component Events
-
-- Communication between components [npm/super-event-emitter](https://www.npmjs.com/package/super-event-emitter)
 
 ---
 
@@ -969,6 +836,174 @@ Verify:
   - [npm/release-it](https://www.npmjs.com/package/release-it)
   - [npm/changesets](https://www.npmjs.com/package/@changesets/cli) — for monorepo versioning
   - [npm/semantic-release](https://www.npmjs.com/package/semantic-release) — fully automated version management and publishing
+
+---
+
+## Codebase (Technical)
+
+### Bootstrap Process
+
+- Having one function that starts the application e.g. `main()`
+- Implement **graceful shutdown** — handle `SIGTERM`/`SIGINT` signals to close database connections, finish pending requests, and clean up resources before the process exits
+- Add a **health check** endpoint (`/health` or `/healthz`) that returns the application's status — used by load balancers, orchestrators (Kubernetes), and monitoring tools
+
+### Modules
+
+- ES Modules (ESM) — the standard module system for modern JavaScript
+- Bundlers:
+  - [Vite](https://vite.dev/) — fast dev server with HMR and optimized production builds
+  - [esbuild](https://esbuild.github.io/) — extremely fast JavaScript bundler
+  - ~~[webpack](https://webpack.js.org/)~~ ❌ — significantly slower build times compared to modern alternatives, complex configuration, and being gradually replaced in the ecosystem by Vite and Turbopack
+
+### One Place for All Custom Error Types
+
+- Define all errors in a single location to avoid scattering them across the application.
+- Example: `src/errors/index.ts`
+
+### Configuration
+
+- <https://12factor.net/pl/config>
+  - Having one place with configuration `config.js`
+- Validate environment variables at startup — fail fast if required variables are missing
+
+💡 TIP:
+
+- Use [t3-env](https://env.t3.gg/) for type-safe environment variable validation with Zod
+- Use [Zod](https://zod.dev/) schemas to validate and parse configuration at build/start time
+
+### Component Events
+
+- Communication between components [npm/super-event-emitter](https://www.npmjs.com/package/super-event-emitter)
+
+---
+
+## Tools
+
+### Husky
+
+- <https://typicode.github.io/husky/>
+
+### Lint-staged
+
+- <https://github.com/okonet/lint-staged>
+
+### Prettier
+
+- <https://prettier.io/>
+
+### TypeScript
+
+- Enable "Strict Mode" in `tsconfig.json`
+
+  ```json
+  {
+    "compilerOptions": {
+      "strict": true
+    }
+  }
+  ```
+
+### ESLint
+
+🕹️ [Playground](https://eslint.org/play/)
+
+```js
+'no-unsafe-optional-chaining': 'error',
+'prefer-arrow-callback': 'error',
+'no-param-reassign': 'error',
+'no-extra-boolean-cast': 'error',
+```
+
+plugins:
+
+- [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
+- [eslint-plugin-import](https://github.com/import-js/eslint-plugin-import)
+  - [consistent-type-specifier-style](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/consistent-type-specifier-style.md)
+    ```js
+    'import/consistent-type-specifier-style': [
+      'error',
+      {
+        mode: 'prefer-top-level',
+      },
+    ],
+    ```
+  - [enforce-node-protocol-usage](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/enforce-node-protocol-usage.md)
+    ```js
+    'import/enforce-node-protocol-usage': 'error',
+    ```
+  - [newline-after-import](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/newline-after-import.md)
+    ```js
+    'import/newline-after-import': ["error", { "count": 1 }],
+    ```
+  - [no-extraneous-dependencies](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-extraneous-dependencies.md)
+    ```js
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: false,
+        optionalDependencies: false,
+        peerDependencies: false,
+      },
+    ],
+    ```
+  - [no-relative-parent-imports](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/no-relative-parent-imports.md)
+    ```js
+    'import/no-relative-parent-imports': 'error',
+    ```
+  - [no-self-import](https://github.com/import-js/eslint-plugin-import)
+    ```js
+    'import/no-self-import': 'error',
+    ```
+  - [order](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/order.md)
+    ```js
+    'import/order': [
+      'error',
+      {
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'unknown',
+          'parent',
+          'sibling',
+          'index',
+          'object',
+          'type',
+        ],
+        'newlines-between': 'always',
+      },
+    ],
+    ```
+- [eslint-plugin-no-relative-import-paths](https://github.com/MelvinVermeer/eslint-plugin-no-relative-import-paths)
+- [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react)
+- [eslint-plugin-regexp](https://github.com/ota-meshi/eslint-plugin-regexp)
+- [eslint-plugin-smells](https://github.com/elijahmanor/eslint-plugin-smells)
+- [eslint-plugin-unicorn](https://github.com/sindresorhus/eslint-plugin-unicorn)
+- [eslint-plugin-unused-imports](https://github.com/sweepline/eslint-plugin-unused-imports)
+
+TypeScript plugins:
+
+- [@typescript-eslint/array-type](https://typescript-eslint.io/rules/array-type/)
+- [@typescript-eslint/explicit-member-accessibility](https://typescript-eslint.io/rules/explicit-member-accessibility/)
+- [@typescript-eslint/no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises/)
+- [@typescript-eslint/no-explicit-any](https://typescript-eslint.io/rules/no-explicit-any/)
+- [@typescript-eslint/consistent-type-imports](https://typescript-eslint.io/rules/consistent-type-imports/)
+  - <https://typescript-eslint.io/blog/consistent-type-imports-and-exports-why-and-how/#benefits-of-enforcing-type-only-importsexports>
+
+### Utilities
+
+- [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
+
+### HTTP Request
+
+- [TanStack Query (React Query)](https://tanstack.com/query/latest) - declarative data fetching with caching, refetching, and synchronization
+- [Apollo GraphQL](https://www.apollographql.com/) - for GraphQL APIs
+- ~~[Axios](https://axios-http.com/)~~ ❌ — the native `fetch` API is now well-supported across all modern browsers and Node.js 18+, making Axios largely unnecessary. `fetch` is lighter, has no dependencies, and supports streaming natively.
+
+### Changelog
+
+- [changelog-all-possibilities](https://github.com/piecioshka/changelog-all-possibilities)
+- [🇵🇱 Blogpost: husky-commitlint-git-changelog](https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html)
 
 ---
 
