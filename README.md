@@ -914,6 +914,20 @@ Verify:
 'no-extra-boolean-cast': 'error',
 ```
 
+Ban the `@flow` pragma in TypeScript files — Flow and TypeScript are different type
+systems and mixing them leads to inconsistent type checking.
+
+```js
+// In ESLint config overrides for *.ts / *.tsx
+'no-warning-comments': [
+  'error',
+  {
+    terms: ['@flow'],
+    location: 'anywhere',
+  },
+],
+```
+
 plugins:
 
 - [eslint-plugin-import-helpers](https://github.com/willhoney7/eslint-plugin-import-helpers)
@@ -943,6 +957,17 @@ plugins:
         devDependencies: false,
         optionalDependencies: false,
         peerDependencies: false,
+      },
+    ],
+    ```
+    - Demo: <https://github.com/piecioshka/demo-eslint-import-no-extraneous-dependencies>
+  - [extensions](https://github.com/import-js/eslint-plugin-import/blob/main/docs/rules/extensions.md) — remove file extensions from imports for consistency
+    ```js
+    'import/extensions': [
+      'error',
+      'never',
+      {
+        json: 'always',
       },
     ],
     ```
@@ -1091,3 +1116,6 @@ Verify:
 - Template for issues - `.github/ISSUE_TEMPLATE.md`
   - <https://github.com/devspace/awesome-github-templates#bomb-templates-for-issues>
 - Contributing rules - `.github/CONTRIBUTING.md`
+- **CODEOWNERS** — define code ownership in `.github/CODEOWNERS` so the right reviewers are auto-assigned on PRs
+  - Audit for unowned files with [codeowners](https://github.com/beaugunderson/codeowners): `codeowners audit -u`
+  - Reference: <https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners>
