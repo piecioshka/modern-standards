@@ -391,7 +391,9 @@ Verify:
 
 💡 TIP:
 
-- Debuggers force a re-scrape after you fix tags (all of them cache aggressively): [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/), [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/), [X Card Validator](https://cards-dev.twitter.com/validator).
+- Official debuggers also force a **re-scrape** after you fix tags, which matters because both platforms cache previews for weeks: [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/), [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/).
+  - X deprecated its Card Validator — there is no official equivalent any more.
+- Third-party previewers show several platforms at once and need no login: [opengraph.to](https://www.opengraph.to/), [Open Graph Debugger](https://opengraphexamples.com/open-graph-debugger/), [opengraph.xyz](https://www.opengraph.xyz/).
 - Check what a crawler actually receives: `curl -s -A "facebookexternalhit/1.1" https://example.com | grep 'og:'`
 
 ### Favicons
