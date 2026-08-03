@@ -29,7 +29,9 @@ If you're missing answers to questions like:
   * [Component Optimization](#component-optimization)
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
+  * [Client-side Storage](#client-side-storage)
   * [Tools](#tools)
+- [Feature Flags](#feature-flags)
 - [Accessibility (a11y)](#accessibility-a11y)
   * [WCAG 2.1 Compliance](#wcag-21-compliance)
   * [Keyboard Navigation](#keyboard-navigation)
@@ -38,10 +40,12 @@ If you're missing answers to questions like:
   * [Tools](#tools-1)
 - [SEO](#seo)
   * [Meta Tags](#meta-tags)
+  * [Favicons](#favicons)
   * [Structured Data](#structured-data)
   * [Sitemap & robots.txt](#sitemap--robotstxt)
   * [Core Web Vitals](#core-web-vitals)
   * [Tools](#tools-2)
+- [Progressive Web App (PWA)](#progressive-web-app-pwa)
 - [Internationalization (i18n)](#internationalization-i18n)
   * [Multi-language Support](#multi-language-support)
   * [RTL Layout Support](#rtl-layout-support)
@@ -71,6 +75,7 @@ If you're missing answers to questions like:
 - [Security](#security)
   * [OWASP Top 10](#owasp-top-10)
   * [Content Security Policy (CSP)](#content-security-policy-csp)
+  * [Analytics & Consent](#analytics--consent)
   * [HTTPS](#https)
   * [Authentication & Authorization](#authentication--authorization)
   * [Secrets Management](#secrets-management)
@@ -88,6 +93,7 @@ If you're missing answers to questions like:
     + [Alerting Rules](#alerting-rules)
   * [Test Application Rollback Deployment](#test-application-rollback-deployment)
   * [Release Process](#release-process)
+  * [Deployment Verification](#deployment-verification)
 - [Codebase (Technical)](#codebase-technical)
   * [Bootstrap Process](#bootstrap-process)
   * [Modules](#modules)
@@ -164,6 +170,8 @@ Verify:
 - Is the retry limited to idempotent requests (GET, PUT, DELETE) to avoid duplicating side effects?
 - Is there a maximum number of retries to prevent infinite loops?
 - Is exponential backoff used between retries to avoid server overload?
+- Does every request have a **timeout**? `fetch` has none by default — a hung connection blocks the UI forever, and no retry policy saves you from a request that never settles.
+  - `fetch(url, { signal: AbortSignal.timeout(10_000) })`
 
 💡 TIP:
 
@@ -237,12 +245,54 @@ Verify:
 - Test navigation flows manually: navigate forward several pages, then use the "Back" button to verify correct behavior at each step
 - Watch for unintended re-fetching or state loss on back navigation
 
+### Client-side Storage
+
+Verify:
+
+- Is each storage key **namespaced with a prefix** (`myapp:token`, `myapp:settings`)? Several apps can share one origin on a hosting domain.
+- Is everything read from storage **sanitized**? Treat it as untrusted input — the user, an old release, or another tab could have written anything there.
+- Do you use the right store for the data?
+  - `localStorage` — small strings, ~5 MB, synchronous. It **cannot hold blobs**.
+  - `IndexedDB` — files, images, large structured data. Much bigger quota.
+- Do writes survive a full quota? `localStorage.setItem` throws when the disk is full — an unhandled throw here can break the whole app.
+- Have you asked for **persistent storage** (`navigator.storage.persist()`) if losing the data would ruin the session?
+- Do you warn the user before the quota runs out (`navigator.storage.estimate()`), and offer a way to free space?
+- If a "clear everything" action exists, does it clear **every** store — `localStorage`, `IndexedDB`, caches — and not just the visible list?
+
+⚠️ WARNING: Restoring saved state on startup and writing new state can **race**. If a restore runs asynchronously while an import writes the same array, the write persists a half-restored snapshot and the rest is lost for good. Await the restore before any code path that saves.
+
+💡 TIP:
+
+- Orphaned records are the usual bug: metadata in `localStorage` and blobs in `IndexedDB` get out of sync when only one of them fails. Reconcile the two on startup.
+- Fire-and-forget writes (`void save(...)`) can land *after* a "clear all", repopulating a store the user just emptied. Track the pending promise and await it before clearing.
+
+---
+
 ### Tools
 
 - [React](https://react.dev/)
 - [Storybook](https://storybook.js.org/)
 - [React Hook Form](https://react-hook-form.com/) — performant, flexible form library with minimal re-renders
 - ~~[Formik](https://formik.org/)~~ ❌ — largely unmaintained, causes excessive re-renders on every keystroke, and has a larger bundle size compared to React Hook Form
+
+---
+
+## Feature Flags
+
+Verify:
+
+- Can unfinished work ship to production **disabled**, instead of living on a long-running branch?
+- Is there a single place that lists every flag and its default?
+- Can a flag be toggled **without a rebuild** — a query parameter, cookie, or remote config — so it can be verified on the real deployment?
+- Are unknown or stale flag names ignored gracefully? An old shared link must not break the app.
+- Is flagged code **imported lazily** (dynamic `import()`), so a disabled feature ships no JavaScript to the browser at all?
+- Is there a plan to **remove** the flag? Flags that outlive their feature become permanent dead branches.
+
+💡 TIP:
+
+- The cheapest useful setup: build-time defaults from env variables (`VITE_FF_*`, `NEXT_PUBLIC_FF_*`) plus a `?ff=name` / `?ff=-name` override for one visit.
+- Verify the disabled path by inspecting the network tab — if the feature's chunk still downloads, the flag only hides the UI, it does not disable the feature.
+- Hosted alternatives when flags need to change per user or without a deploy: [Unleash](https://www.getunleash.io/), [Flagsmith](https://flagsmith.com/), [PostHog](https://posthog.com/feature-flags), [LaunchDarkly](https://launchdarkly.com/).
 
 ---
 
@@ -271,6 +321,12 @@ Verify:
 - Is there a visible focus indicator (outline) on focused elements?
 - Are keyboard traps avoided (user can always Tab away from an element)?
 - Is a "Skip to main content" link provided for long navigation menus?
+- Are custom controls built on hidden inputs still focusable?
+  - A `<label for>` pointing at an `<input hidden>` is **unreachable by keyboard** — `hidden` removes the element from the tab order. Use a visually-hidden class (`.sr-only`) or a real `<button>` that forwards the click.
+- Does every focusable control have a visible focus ring — including `<select>`, color inputs and buttons styled with `border: none`?
+  - Grep for `:focus-visible` and compare the count against the number of interactive components.
+- Do modal dialogs trap focus, return it to the opener on close, and mark the rest of the page as inert?
+  - `role="dialog" aria-modal="true"` **promises** this behaviour but implements nothing. Native `<dialog>` + `showModal()` gives you all of it for free.
 
 ### Screen Readers
 
@@ -279,18 +335,30 @@ Verify:
 - Is semantic HTML used (`<nav>`, `<main>`, `<article>`, `<aside>`, `<header>`, `<footer>`) instead of generic `<div>`s?
 - Are ARIA roles and attributes used only when native HTML semantics are insufficient?
 - Are dynamic content changes announced to screen readers (using `aria-live` regions)?
+  - Counters, toasts, and loading states all qualify — a status that only changes visually is invisible to a screen reader (WCAG 4.1.3).
+  - Keep live text meaningful: `"12 / 40"` is announced as "twelve slash forty". Say what it counts.
+  - Beware of chatty regions: updating a `polite` region once per processed item queues hundreds of announcements.
 - Are decorative elements hidden from screen readers (`aria-hidden="true"`)?
+  - Check that `aria-hidden` is not left on an element you later reveal — it silences content that is visually shown.
+- Do icon-only controls have an accessible name, not just a `title`?
+  - `title` is ignored by most mobile screen readers and unreachable by keyboard. Pair it with `aria-label`.
 
 ### Color Contrast
 
 Verify:
 
 - Does text meet the minimum contrast ratio of **4.5:1** (normal text) or **3:1** (large text)?
+- Do **UI boundaries** meet 3:1 against their background (input borders, toggles, focus rings)? WCAG 1.4.11 covers non-text contrast too.
 - Is color not the only means of conveying information (e.g., error states also use icons or text)?
+- If users can pick a theme or accent color, is the text color on top of it **computed**, not guessed?
+- Is the resting state at least as readable as the hover state? It is easy to polish `:hover` and leave the default below AA.
+
+⚠️ WARNING: Choosing black-or-white text by "perceived brightness" (`0.299R + 0.587G + 0.114B`) is a common shortcut that **fails badly**. Pure green scores 0.587 on that formula, so a naive threshold picks white text — a contrast of 1.29:1, effectively invisible. Use WCAG relative luminance (with sRGB gamma expansion) and pick whichever of the two candidates scores higher.
 
 💡 TIP:
 
 - Test contrast with <https://webaim.org/resources/contrastchecker/>
+- Contrast math is pure logic — cover it with unit tests instead of eyeballing screenshots.
 
 ### Tools
 
@@ -308,12 +376,34 @@ Verify:
 Verify:
 
 - Does every page have a unique `<title>` and `<meta name="description">`?
+  - Is the `<title>` long enough to fill the search result (aim for 50–60 characters)? A three-word title wastes the space.
 - Are Open Graph tags set for social media sharing?
-  - `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
+  - Required: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`
+  - Easy to forget, but visible to users: `og:site_name` (shown above the title on Facebook, LinkedIn and Discord — without it the card looks anonymous), `og:locale`, `og:image:alt` (read by screen readers instead of the image), `og:image:width` / `og:image:height` / `og:image:type`
 - Are Twitter Card tags set?
-  - `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+  - `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`, `twitter:image:alt`
+- Is the `og:image` URL **absolute**, and does the file really have the dimensions you declared?
+  - 1200×630 px is the safe size. Verify the actual file, not the tag — a mismatch means the crawler crops or drops it.
+- Are the tags in the **server-rendered HTML**?
+  - Social crawlers do not execute JavaScript. Tags injected by the client are invisible to them — check with `curl`, not DevTools.
 - Is the `<html lang="...">` attribute set to the correct language?
 - Is a canonical URL (`<link rel="canonical">`) defined to avoid duplicate content?
+
+💡 TIP:
+
+- Debuggers force a re-scrape after you fix tags (all of them cache aggressively): [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/), [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/), [X Card Validator](https://cards-dev.twitter.com/validator).
+- Check what a crawler actually receives: `curl -s -A "facebookexternalhit/1.1" https://example.com | grep 'og:'`
+
+### Favicons
+
+Verify:
+
+- Is there a `.ico` or `.png` favicon — not only an SVG?
+  - **Google Search does not display SVG favicons.** A site with only `favicon.svg` shows the default globe icon in search results.
+- Does `/favicon.ico` exist at the site root? Browsers and crawlers request it even when you never declare it.
+- Are the PNG sizes declared (`16x16`, `32x32`) and is `apple-touch-icon.png` (180×180) present for iOS home screens?
+- Does the icon stay legible at 16 px? Detail that looks good at 512 px turns to mush.
+- Do the icon colors match the current brand palette? Icons are generated once and then silently drift when the palette changes.
 
 ### Structured Data
 
@@ -354,6 +444,30 @@ Verify:
 - [Lighthouse](https://developer.chrome.com/docs/lighthouse/) — built-in Chrome audit tool
 - [Google Search Console](https://search.google.com/search-console/) — monitor indexing and search performance
 - [npm/next-seo](https://www.npmjs.com/package/next-seo) — SEO management for Next.js applications
+
+---
+
+## Progressive Web App (PWA)
+
+Not every site needs to be installable — but if users would benefit from opening it like an app, it is a small amount of work for a large payoff.
+
+Verify:
+
+- Is there a `manifest.webmanifest` with `name`, `short_name`, `start_url`, `display`, `theme_color`, `background_color` and icons (192, 512, plus a `maskable` variant)?
+- Does the app **start offline**? Precache the app shell so the first paint does not depend on the network.
+- Is it clear to the user which features still need connectivity (maps, search, sync)?
+- When a new version deploys, do existing users get it?
+  - A service worker serves the **old** cached build until it updates. Either auto-update and reload, or show a "new version available" prompt. Silent staleness is the classic PWA bug.
+- Does the icon set include a maskable icon, so Android does not letterbox it inside a white circle?
+- If the app receives content from other apps, is `share_target` declared in the manifest and handled in the service worker?
+
+⚠️ WARNING: A service worker makes **every deployment verification unreliable** — you may be looking at the previous build. When checking production, unregister the worker and clear caches first, or test in a fresh private window. More than one "the fix did not deploy" panic traces back to this.
+
+💡 TIP:
+
+- Generate the worker instead of hand-writing it: [Workbox](https://developer.chrome.com/docs/workbox/), [vite-plugin-pwa](https://vite-pwa-org.netlify.app/), [next-pwa](https://github.com/shadowwalker/next-pwa).
+- Audit with Lighthouse's "Installable" checks.
+- Reference: <https://web.dev/explore/progressive-web-apps>
 
 ---
 
@@ -619,12 +733,34 @@ Verify:
 - Is a `Content-Security-Policy` header configured to restrict which resources (scripts, styles, images) can be loaded?
 - Is `script-src 'unsafe-inline'` avoided? Use nonces or hashes instead.
 - Is `frame-ancestors` set to prevent clickjacking?
+- Does the allowlist cover **every** host the app talks to — analytics, error tracking, maps, fonts, auth popups — in the right directive?
+  - Analytics usually needs two: `script-src` for the tag and `connect-src` for the beacons.
+- Is the policy re-checked whenever a third-party script is added? A strict CSP silently kills the newcomer, and the failure looks like "the integration does not work".
+
+⚠️ WARNING: A strict CSP forbids loading libraries from a CDN. Bundle third-party scripts (consent banners, widgets) with your app instead of copying the vendor's `<script src="https://cdn...">` snippet.
 
 💡 TIP:
 
 - Start with a report-only policy (`Content-Security-Policy-Report-Only`) to identify violations before enforcing
 - Use [helmet](https://www.npmjs.com/package/helmet) in Node.js to set security headers easily
 - Test your CSP at <https://csp-evaluator.withgoogle.com/>
+
+### Analytics & Consent
+
+Verify:
+
+- Do tracking scripts load **only after** the user accepts? Loading first and "respecting" the choice later already set the cookies.
+- Is rejecting as easy as accepting — one click, same visual weight? A hidden "reject" is a GDPR violation, not a dark pattern worth risking.
+- Can the user change their mind later? Link the preferences dialog from the privacy page or footer.
+- When consent is withdrawn, are the cookies actually removed and reporting stopped?
+  - A loaded script cannot be unloaded — set the vendor's opt-out flag (for GA4: `window['ga-disable-G-XXXX'] = true`) and clear its cookies.
+- Is analytics disabled on `localhost`, so development traffic does not pollute the data?
+- Does your **privacy copy still match reality** after adding a tracker? "We don't use analytics" quietly becomes a lie the moment you add one.
+
+💡 TIP:
+
+- Verify with the network tab, not with the code: before consent there must be **zero** requests to the analytics host.
+- Cookie-less analytics ([Plausible](https://plausible.io/), [Umami](https://umami.is/), [Fathom](https://usefathom.com/), [GoatCounter](https://www.goatcounter.com/)) may not need a banner at all — the simplest way to pass this section is to not need it.
 
 ### HTTPS
 
@@ -836,6 +972,27 @@ Verify:
   - [npm/release-it](https://www.npmjs.com/package/release-it)
   - [npm/changesets](https://www.npmjs.com/package/@changesets/cli) — for monorepo versioning
   - [npm/semantic-release](https://www.npmjs.com/package/semantic-release) — fully automated version management and publishing
+
+Verify:
+
+- Is the running version **visible in the app** (footer, settings, `/health` response)? Without it, "did my fix deploy?" is unanswerable.
+- Does the version come from a single source (`package.json`) rather than being typed in twice?
+- Is the git tag pushed along with the release commit (`git push --follow-tags`)? A version bump with no tag is invisible in the repository.
+
+### Deployment Verification
+
+Deploying is not the same as shipping. Confirm on the real URL, not on localhost.
+
+Verify:
+
+- Did the deploy actually succeed? A failed build can leave the previous version live and everything looks fine.
+- Are you looking at the **new** build? Service workers, CDN caches and browser caches all serve stale content — bypass them before drawing conclusions.
+- Do the environment variables exist in the deploy environment? Values from `.env.local` do not travel with the code, and a missing variable usually degrades a feature silently rather than failing loudly.
+- Do the things that only exist in production work — security headers, redirects, canonical URLs, the analytics beacon?
+
+💡 TIP:
+
+- Automate the smoke check: `curl` the deployed URL and assert on a marker (the version string, a meta tag, a header) instead of trusting the deploy log.
 
 ---
 
