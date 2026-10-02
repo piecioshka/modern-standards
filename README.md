@@ -30,6 +30,8 @@ If you're missing answers to questions like:
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
   * [Client-side Storage](#client-side-storage)
+  * [Dark & Light Mode](#dark--light-mode)
+  * [Search & Command Palette](#search--command-palette)
   * [Tools](#tools)
 - [Feature Flags](#feature-flags)
 - [Accessibility (a11y)](#accessibility-a11y)
@@ -43,6 +45,7 @@ If you're missing answers to questions like:
   * [Favicons](#favicons)
   * [Structured Data](#structured-data)
   * [Sitemap & robots.txt](#sitemap--robotstxt)
+  * [RSS Feed](#rss-feed)
   * [Core Web Vitals](#core-web-vitals)
   * [Tools](#tools-2)
 - [Progressive Web App (PWA)](#progressive-web-app-pwa)
@@ -88,6 +91,7 @@ If you're missing answers to questions like:
   * [Pipelines](#pipelines)
   * [Monitoring & Alerting](#monitoring--alerting)
     + [Error Tracking](#error-tracking)
+    + [Real User Monitoring (RUM)](#real-user-monitoring-rum)
     + [Application Performance Monitoring (APM)](#application-performance-monitoring-apm)
     + [Uptime Monitoring](#uptime-monitoring)
     + [Alerting Rules](#alerting-rules)
@@ -132,9 +136,20 @@ Beyond the technical stuff, there are a few things every site shown to users in 
 - **Cookie banner** — if you use analytics, ads, or any third-party tracking. Users must be able to **reject** as easily as accept. Don't load the tracking scripts until they click accept.
 - **Contact info** — visible email/address. In Germany & Austria this is required ("Impressum") on every page.
 - **Terms of Service** — if users sign up, pay, or upload content.
-- **Accessibility** — keyboard navigation works, contrast is readable, screen readers can parse the page. From mid-2025 it's legally required for most B2C sites in the EU.
+- **Accessibility** — keyboard navigation works, focus is visible, the HTML is semantic, contrast is readable, screen readers can parse the page. From mid-2025 it's legally required for most B2C sites in the EU.
 - **HTTPS everywhere** — no exceptions.
 - **A way to delete the account** — if users can register, they must be able to leave.
+
+And the technical baseline. Each item links to its detailed checklist below:
+
+- **Dark & light mode** - follows the system setting, with a manual switch. See [Dark & Light Mode](#dark--light-mode).
+- **Favicon + a dedicated Apple icon** - a raster favicon for browsers and Google, and `apple-touch-icon.png` for Apple devices. See [Favicons](#favicons).
+- **Search under `Cmd+K` / `Ctrl+K`** - only if the site needs a search at all. See [Search & Command Palette](#search--command-palette).
+- **Open Graph** - so a shared link shows a title, a description and an image. See [Meta Tags](#meta-tags).
+- **JSON-LD** - tells search engines what the page is about. See [Structured Data](#structured-data).
+- **`sitemap.xml` and `robots.txt`** - what to index and what to skip. See [Sitemap & robots.txt](#sitemap--robotstxt).
+- **`rss.xml`** - only if you publish content over time. See [RSS Feed](#rss-feed).
+- **RUM (Real User Monitoring)** - above all: performance data from real users, not just Lighthouse run on a developer's MacBook. See [Real User Monitoring (RUM)](#real-user-monitoring-rum).
 
 💡 Tools that handle most of this for you:
 
@@ -266,6 +281,49 @@ Verify:
 - Orphaned records are the usual bug: metadata in `localStorage` and blobs in `IndexedDB` get out of sync when only one of them fails. Reconcile the two on startup.
 - Fire-and-forget writes (`void save(...)`) can land *after* a "clear all", repopulating a store the user just emptied. Track the pending promise and await it before clearing.
 
+### Dark & Light Mode
+
+Verify:
+
+- Does the site follow the system setting (`prefers-color-scheme`) by default?
+- Can the user override it - light / dark / system - and is the choice remembered?
+- Is the theme applied **before the first paint**?
+  - Reading the saved choice in a framework effect is too late: the page renders light, then flips to dark. A small inline script in `<head>` that sets an attribute on `<html>` avoids the flash.
+- Is `color-scheme` declared - `<meta name="color-scheme" content="light dark">` or `color-scheme: light dark` in CSS?
+  - Without it the browser's own UI stays light inside a dark page: form controls, scrollbars, the default canvas color.
+- Are colors defined as tokens (CSS custom properties) instead of being hardcoded in components? A hardcoded `#fff` is the usual reason one widget ignores the theme.
+- Is contrast verified in **both** themes? Dark themes typically fail on muted text, borders and disabled states.
+- Do images, logos, charts, embeds and code highlighting adapt? A transparent PNG logo with dark lettering disappears on a dark background.
+- Does `<meta name="theme-color">` have a value for each scheme (`media="(prefers-color-scheme: dark)"`), so the mobile browser bar matches the page?
+- When "system" is selected, does the page react live to the OS switching at sunset, without a reload?
+
+💡 TIP:
+
+- [`light-dark()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/light-dark) keeps both values in one declaration - `color: light-dark(#111, #eee)` - instead of duplicating every rule inside a media query.
+- Test without touching the OS setting: DevTools → Rendering → "Emulate CSS media feature `prefers-color-scheme`", or Playwright's `colorScheme: 'dark'`.
+- Run the automated accessibility checks once per theme - a contrast bug in the dark theme is invisible to a run that only loads the light one.
+
+### Search & Command Palette
+
+Not every site needs a search. If yours does, users expect it under the same shortcut as everywhere else.
+
+Verify:
+
+- Does `Cmd+K` (macOS) / `Ctrl+K` (Windows, Linux) open the search from any page?
+  - Handle both `event.metaKey` and `event.ctrlKey`, and call `preventDefault()` - browsers bind `Ctrl+K` to their own search field.
+- Is the shortcut **discoverable** - a visible search button with a `⌘K` / `Ctrl K` hint? A shortcut nobody knows about does not exist, and touch users have no keyboard at all.
+- Does the shortcut stay out of the way where `Cmd+K` already means something else - "insert link" in a rich text editor?
+- Can the whole flow be done from the keyboard: arrows move through results, `Enter` opens one, `Esc` closes the palette and returns focus to where it was?
+- Is it built on the combobox pattern (`role="combobox"`, `aria-expanded`, `aria-activedescendant`) inside a native `<dialog>`, with the number of results announced to screen readers?
+- Are the empty, loading and "no results" states handled?
+- Is the index built at deploy time when the content is static? A search that needs no backend cannot go down.
+
+💡 TIP:
+
+- Palette components: [npm/cmdk](https://www.npmjs.com/package/cmdk), [kbar](https://kbar.vercel.app/).
+- Search engines: [Pagefind](https://pagefind.app/) (static index, no server), [Fuse.js](https://www.fusejs.io/) (fuzzy search over a small in-memory list), [Algolia DocSearch](https://docsearch.algolia.com/) (hosted, for documentation).
+- Reference: <https://www.w3.org/WAI/ARIA/apg/patterns/combobox/>
+
 ---
 
 ### Tools
@@ -333,6 +391,8 @@ Verify:
 Verify:
 
 - Is semantic HTML used (`<nav>`, `<main>`, `<article>`, `<aside>`, `<header>`, `<footer>`) instead of generic `<div>`s?
+  - Is there one `<h1>` per page, with heading levels that do not skip (`h2` straight to `h4`)? Screen reader users navigate by jumping between headings.
+  - Are actions real `<button>`s and navigation real `<a href>`s? A clickable `<div>` has no role, no focus and no keyboard support.
 - Are ARIA roles and attributes used only when native HTML semantics are insufficient?
 - Are dynamic content changes announced to screen readers (using `aria-live` regions)?
   - Counters, toasts, and loading states all qualify — a status that only changes visually is invisible to a screen reader (WCAG 4.1.3).
@@ -404,14 +464,27 @@ Verify:
   - **Google Search does not display SVG favicons.** A site with only `favicon.svg` shows the default globe icon in search results.
 - Does `/favicon.ico` exist at the site root? Browsers and crawlers request it even when you never declare it.
 - Are the PNG sizes declared (`16x16`, `32x32`) and is `apple-touch-icon.png` (180×180) present for iOS home screens?
+- Is the Apple icon a **dedicated** image, not the favicon scaled up? Apple devices use it for the home screen and for Safari's Favorites, where it is shown far larger than a tab icon.
+  - Is the background **opaque**? iOS fills transparent pixels with black.
+  - Are the corners square, with some padding around the mark? iOS applies its own rounded mask - pre-rounded corners end up doubled.
+  - Is it declared (`<link rel="apple-touch-icon" href="/apple-touch-icon.png">`) **and** placed at the site root? Safari requests `/apple-touch-icon.png` even when the tag is missing.
+  - Is the home screen label set with `<meta name="apple-mobile-web-app-title">`? Without it iOS truncates the full `<title>`.
 - Does the icon stay legible at 16 px? Detail that looks good at 512 px turns to mush.
+- Does the icon work on both a light and a dark tab bar? A dark mark on a transparent background disappears in dark mode.
+  - An SVG favicon can switch colors itself with `@media (prefers-color-scheme: dark)` inside the file.
 - Do the icon colors match the current brand palette? Icons are generated once and then silently drift when the palette changes.
+
+💡 TIP:
+
+- [RealFaviconGenerator](https://realfavicongenerator.net/) generates the whole set from one source image and checks an existing site for missing variants.
 
 ### Structured Data
 
 Verify:
 
 - Is JSON-LD structured data added for relevant content types (articles, products, events, FAQ)?
+- Does the site describe itself, not only its content? `WebSite` plus `Organization` (or `Person`) on the home page applies to every site, even one with no articles.
+- Is the JSON-LD in the **server-rendered HTML**, and does it match what the page visibly shows? Markup describing content the user cannot see is treated as spam.
 - Does the structured data pass validation?
 
 💡 TIP:
@@ -425,8 +498,30 @@ Verify:
 Verify:
 
 - Is a `sitemap.xml` generated and submitted to search engines?
+  - Is it generated at build time from the real list of routes? A hand-written sitemap is out of date after the first new page.
+  - Does it list only canonical, indexable, absolute URLs - no redirects, no `noindex` pages, no 404s?
 - Is `robots.txt` configured to allow indexing of public pages and block private ones?
+  - Does it point at the sitemap (`Sitemap: https://example.com/sitemap.xml`)?
 - Are non-production environments blocked from indexing (`noindex`, `nofollow` or `robots.txt` disallow)?
+
+### RSS Feed
+
+Only if the site publishes something over time - blog posts, a changelog, releases, podcast episodes.
+
+Verify:
+
+- Is there a feed at a stable URL (`/rss.xml` or `/feed.xml`)?
+- Is it discoverable - `<link rel="alternate" type="application/rss+xml" title="..." href="/rss.xml">` in the `<head>` of every page?
+- Are all URLs inside the feed **absolute** - links, images, enclosures? A feed is read outside your site, where relative paths point nowhere.
+- Does each item have a stable `<guid>` and a valid `<pubDate>`? Changing a `guid` makes every reader show old posts as new.
+- Does the feed carry the full content, or at least a meaningful summary - not just a title?
+- Is it generated at build time from the same source as the pages, so the two cannot drift apart?
+- Does the feed pass validation?
+
+💡 TIP:
+
+- Validate at <https://validator.w3.org/feed/>
+- Use tools: [@astrojs/rss](https://docs.astro.build/en/recipes/rss/), [feed](https://github.com/jpmonette/feed) (RSS 2.0, Atom and JSON Feed from one definition)
 
 ### Core Web Vitals
 
@@ -440,6 +535,8 @@ Verify:
 
 - Measure with [PageSpeed Insights](https://pagespeed.web.dev/) or Lighthouse
 - Monitor real-user data with [web-vitals](https://www.npmjs.com/package/web-vitals) library
+
+⚠️ WARNING: The thresholds above are judged on **real users**, not on a lab run. A green Lighthouse score on your own machine does not mean the site passes - see [Real User Monitoring (RUM)](#real-user-monitoring-rum).
 
 ### Tools
 
@@ -913,6 +1010,29 @@ Verify:
 - Use tools:
   - [Sentry](https://sentry.io/) — real-time error tracking with release tracking and performance monitoring
   - [Bugsnag](https://www.bugsnag.com/) — error monitoring with stability scores
+
+#### Real User Monitoring (RUM)
+
+The most important item in this section. Lighthouse loads one page, once, on one machine. A developer's MacBook on office Wi-Fi says nothing about a mid-range Android phone on a mobile network - and that is where the users are.
+
+Verify:
+
+- Are Core Web Vitals (LCP, INP, CLS) collected from **real users in production**, not only measured in the lab?
+- Do you look at the **75th percentile**, not the average? Google assesses Core Web Vitals at p75, and an average hides the slow tail.
+- Is the data split by page, device type and connection? One site-wide number hides the single slow route.
+- Can you tell **why** a metric is bad - which element was the LCP, which interaction produced the slow INP?
+- Is each data point tagged with the release version, so a regression can be pinned to a deploy?
+- Is there an alert or a budget for when p75 gets worse?
+- Is RUM covered by your consent setup and privacy copy? See [Analytics & Consent](#analytics--consent).
+
+⚠️ WARNING: INP **cannot be measured in the lab** - it needs real interactions. Lighthouse reports Total Blocking Time as a stand-in, which is a different metric. A site can score 100 in Lighthouse and still fail INP for real users.
+
+💡 TIP:
+
+- [web-vitals](https://github.com/GoogleChrome/web-vitals) is the smallest possible setup: `onLCP`, `onINP`, `onCLS` report to your own endpoint via `navigator.sendBeacon`. Its `web-vitals/attribution` build adds the element and interaction responsible.
+- Field data with no code at all: the [Chrome UX Report (CrUX)](https://developer.chrome.com/docs/crux), shown at the top of [PageSpeed Insights](https://pagespeed.web.dev/) and in Search Console. It only exists for sites with enough Chrome traffic and covers a rolling 28 days - too slow to catch a bad deploy.
+- Hosted RUM: [Vercel Speed Insights](https://vercel.com/docs/speed-insights), [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/), [Sentry](https://sentry.io/), [Datadog RUM](https://www.datadoghq.com/product/real-user-monitoring/), [SpeedCurve](https://www.speedcurve.com/), [Grafana Faro](https://grafana.com/oss/faro/) (open source).
+- Reference: <https://web.dev/articles/lab-and-field-data-differences>
 
 #### Application Performance Monitoring (APM)
 
