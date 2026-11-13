@@ -983,6 +983,8 @@ Every CI/CD pipeline should include these steps:
 6. **E2E Tests** — run end-to-end tests against the built application
 7. **Deploy** — deploy to the target environment
 
+Name the workflow that publishes GitHub Pages `.github/workflows/pages.yml` - always that name, whatever it builds (not `deploy.yml`, `static.yml`, `gh-pages.yml`), so every repository keeps its Pages deploy in the same file.
+
 Additional checks:
 
 - **UI Error Collector** of runtime errors
