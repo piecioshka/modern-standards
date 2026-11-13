@@ -118,6 +118,7 @@ If you're missing answers to questions like:
   * [Monorepo](#monorepo)
   * [Dev Containers](#dev-containers)
   * [Documentation](#documentation)
+  * [Screenshots & Banner](#screenshots--banner)
   * [Dependency Updates](#dependency-updates)
 - [Services](#services)
   * [Sourcegraph](#sourcegraph)
@@ -444,6 +445,7 @@ Verify:
   - `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`, `twitter:image:alt`
 - Is the `og:image` URL **absolute**, and does the file really have the dimensions you declared?
   - 1200×630 px is the safe size. Verify the actual file, not the tag — a mismatch means the crawler crops or drops it.
+  - Keep the file at `public/og-image.png` (Next.js: `src/app/opengraph-image.png`), see [Screenshots & Banner](#screenshots--banner).
 - Are the tags in the **server-rendered HTML**?
   - Social crawlers do not execute JavaScript. Tags injected by the client are invisible to them — check with `curl`, not DevTools.
 - Is the `<html lang="...">` attribute set to the correct language?
@@ -1361,6 +1363,25 @@ Verify:
   - Reference: <https://adr.github.io/>
 - **Onboarding guide** — a README or wiki page that helps new developers set up the project and understand the architecture
 - **API documentation** — keep API docs close to the code (OpenAPI/Swagger)
+
+### Screenshots & Banner
+
+Every project that people look at (web app, desktop app, CLI, library with a demo) keeps its promotional images in one place, `docs/`, with the same names in every repo:
+
+| What                | Path                                                                                  | Format                                                     |
+| ------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Screenshots         | `docs/screenshots/<view>.png`, themed variants `<view>-light.png` / `<view>-dark.png` | PNG, made-up data only                                     |
+| Demo recording      | `docs/demo.gif` + `docs/demo-poster.png` (optionally `docs/demo.mp4`)                 | poster cut from the fullest frame, linking to the GIF      |
+| Repository banner   | `docs/banner.png`                                                                     | 2560×1280 (2× of GitHub's 1280×640 social preview), < 1 MB |
+| Website banner (OG) | `public/og-image.png` (Next.js: `src/app/opengraph-image.png`)                        | 1200×630, same artwork as `docs/banner.png`, recropped     |
+
+Verify:
+
+- Does the README show at least one screenshot (or the demo poster) near the top?
+- Are the screenshots up to date with the current UI, with no real names, e-mails, paths or tokens?
+- Is there no promotional image in `demo/` (reserved for a live demo page), `assets/` or `public/` (files the app itself loads), `.github/` or the repository root?
+- Does the repository have `docs/banner.png`, and is it uploaded as the social preview (Settings > General > Social preview, public repos only)?
+- Does the website have its own `og:image`? See [Meta Tags](#meta-tags).
 
 ### Dependency Updates
 
