@@ -26,6 +26,7 @@ If you're missing answers to questions like:
   * [HTTP Request Retry](#http-request-retry)
   * [Response Caching](#response-caching)
   * [Critical Path for Application Loading](#critical-path-for-application-loading)
+  * [Images & Video](#images--video)
   * [Component Optimization](#component-optimization)
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
@@ -233,12 +234,38 @@ Verify:
 - Are non-critical scripts loaded with `defer` or `async` attributes?
 - Is code splitting implemented to load only the necessary code for the initial route?
 - Are fonts preloaded using `<link rel="preload">`?
+  - Only the one or two used above the fold, with `as="font"` and `crossorigin`. Preloading every font delays everything else.
+- Is `<link rel="preconnect">` set for the few third-party origins needed early (API, font host)?
+- Is the CSS free of `@import`? Each one is discovered only after the previous file downloads, so stylesheets load one after another instead of in parallel.
+- Are third-party scripts loaded with `defer`, and self-hosted where the license allows it?
 
 💡 TIP:
 
 - Use Lighthouse to audit and measure the critical rendering path
 - Lazy-load routes and heavy components with `React.lazy()` and `Suspense`
 - Minimize the number of render-blocking resources
+
+### Images & Video
+
+Images are usually the heaviest thing on the page and the usual LCP element.
+
+Verify:
+
+- Is the LCP image (the hero) an `<img>` **in the HTML**, with `fetchpriority="high"`? An image mounted by JavaScript or set as a CSS background is discovered late.
+  - If it must be a CSS background, preload it: `<link rel="preload" as="image" fetchpriority="high">`.
+  - `fetchpriority="high"` on one image, not on ten - when everything is a priority, nothing is.
+- Is the LCP image **not** lazy-loaded? `loading="lazy"` on the hero is the most common self-inflicted LCP regression.
+- Do all images below the fold have `loading="lazy"`?
+- Does every `<img>` and `<video>` have `width` and `height` attributes? The browser reserves the space before the file arrives - no layout shift (CLS).
+- Are responsive images served with `srcset` **and** `sizes`? Without `sizes` the browser assumes the image is as wide as the viewport and downloads the biggest file.
+- Are modern formats served (AVIF, WebP) through `<picture>` or the image CDN, with a JPEG/PNG fallback?
+- Video: is there a `poster`, `preload="none"` when it is not the main content, and no autoplay of a large file without the user asking?
+
+💡 TIP:
+
+- Find the LCP element: DevTools → Performance → "LCP" marker, or the `web-vitals/attribution` build in production.
+- Frameworks do most of this when you use their component: [`next/image`](https://nextjs.org/docs/app/api-reference/components/image), [Astro `<Image />`](https://docs.astro.build/en/guides/images/).
+- Reference: [Modern Web Guidance - performance](https://github.com/GoogleChrome/modern-web-guidance), <https://web.dev/articles/optimize-lcp>
 
 ### Component Optimization
 
@@ -628,6 +655,17 @@ Verify:
 - **LCP (Largest Contentful Paint)** — is the main content visible within 2.5 seconds?
 - **INP (Interaction to Next Paint)** — is the page responsive to user input within 200ms?
 - **CLS (Cumulative Layout Shift)** — is the visual stability score below 0.1?
+
+What usually fixes each one:
+
+- **LCP** - see [Images & Video](#images--video) and [Critical Path for Application Loading](#critical-path-for-application-loading).
+- **INP** - keep the main thread free:
+  - Is any JavaScript task longer than 50 ms split up? Yield inside long loops with `await scheduler.yield()` (fall back to `setTimeout` where it is missing).
+  - Does the UI respond first (show the spinner, close the menu) and compute afterwards?
+  - Are `scroll`, `resize` and `input` handlers throttled or debounced?
+  - Are DOM reads and writes batched? Reading `offsetHeight` right after changing a style, in a loop, forces a layout on every pass.
+  - On long pages: do off-screen sections use `content-visibility: auto` together with `contain-intrinsic-size`? The browser skips rendering them until they scroll near. Not for above-the-fold content, and not worth it on a short page.
+- **CLS** - `width` / `height` on media, space reserved for ads and embeds, and a font fallback with matching metrics (`size-adjust`).
 
 💡 TIP:
 
