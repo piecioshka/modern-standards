@@ -33,6 +33,13 @@ If you're missing answers to questions like:
   * [Dark & Light Mode](#dark--light-mode)
   * [Search & Command Palette](#search--command-palette)
   * [Tools](#tools)
+- [Forms](#forms)
+  * [Markup](#markup)
+  * [Labels & Help Text](#labels--help-text)
+  * [Autofill & Mobile Keyboards](#autofill--mobile-keyboards)
+  * [Validation](#validation)
+  * [Sign-in & Payment Fields](#sign-in--payment-fields)
+  * [Names & Addresses](#names--addresses)
 - [Feature Flags](#feature-flags)
 - [Accessibility (a11y)](#accessibility-a11y)
   * [WCAG 2.1 Compliance](#wcag-21-compliance)
@@ -333,6 +340,88 @@ Verify:
 - [Storybook](https://storybook.js.org/)
 - [React Hook Form](https://react-hook-form.com/) — performant, flexible form library with minimal re-renders
 - ~~[Formik](https://formik.org/)~~ ❌ — largely unmaintained, causes excessive re-renders on every keystroke, and has a larger bundle size compared to React Hook Form
+
+---
+
+## Forms
+
+A form is where users give you their data and their money. Most of what follows is plain HTML attributes - no library needed.
+
+### Markup
+
+Verify:
+
+- Is every form a real `<form>` with a `<button type="submit">`, so `Enter` submits it and password managers recognize it?
+- Does every control have a `name` attribute? Without it the field is missing from the submitted data and from autofill.
+- Does every `<button>` inside a form have an explicit `type`? The default is `submit`, so a forgotten "Cancel" button submits the form.
+- Is the right control used for the number of options?
+  - 2-5 exclusive options: radio buttons. 6 or more: `<select>`. A long or dynamic list: `<input list>` with `<datalist>`. Several at once: checkboxes.
+- Are related controls grouped with `<fieldset>` and `<legend>`?
+- Does the submit button say what it does ("Save changes", "Pay 49.00 EUR"), not "Submit" or "OK"?
+- Does the form still submit when JavaScript fails to load?
+
+### Labels & Help Text
+
+Verify:
+
+- Does every field have a **visible** `<label>` connected with `for` / `id`? A `placeholder` is not a label - it disappears on the first keystroke.
+- Is the label placed above the field, closer to its own field than to the previous one?
+- Is help text and the error message linked to the field with `aria-describedby`?
+- Is it clear which fields are required - in text, not only by color or an asterisk nobody explained?
+- Is the layout a single column? Two columns break the scanning order and hide fields on mobile.
+
+### Autofill & Mobile Keyboards
+
+Verify:
+
+- Does every personal data field have an `autocomplete` token (`email`, `tel`, `name`, `street-address`, `postal-code`, `one-time-code`)?
+  - Never `autocomplete="off"` on sign-in, contact or address fields - it only fights the password manager.
+- Does `inputmode` bring up the right on-screen keyboard (`numeric` for a PIN, `decimal` for an amount, `email`, `tel`)?
+- Does `enterkeyhint` label the Enter key (`search`, `send`, `next`, `done`)?
+- Are `autocorrect="off"`, `autocapitalize="none"` and `spellcheck="false"` set on identifiers - usernames, e-mails, URLs, codes?
+- Is the font size of inputs at least `1rem` (16 px)? Below that, iOS Safari zooms the page on focus.
+- Are card numbers, phone numbers and postal codes **not** `type="number"`? That type drops leading zeros, adds spinner arrows and changes the value on scroll. Use `type="text"` with `inputmode="numeric"`.
+- Is a long number one field, not four boxes? Split fields break paste and autofill.
+
+### Validation
+
+Verify:
+
+- Are the native constraints used first - `required`, `minlength`, `maxlength`, `pattern`, `type="email"` - with `setCustomValidity()` for custom messages?
+- Do errors appear when the user **leaves** the field (`blur`), not while they are still typing? An "invalid e-mail" shown after the first letter is noise.
+  - CSS `:user-invalid` does this for free: unlike `:invalid`, it matches only after the user interacted with the field.
+- Is the submit button **enabled** before submission? A disabled button gives no hint about what is wrong and cannot be focused by keyboard.
+  - Disable it only after a valid submit, to block a double click.
+- On a failed submit, does focus move to the error summary or the first invalid field, and is the error announced (`aria-live` or `role="alert"`)?
+- Is every error shown with text or an icon, not only a red border?
+- Is everything validated again on the server? Client-side validation is a convenience, not a protection.
+- In a multi-step form: is progress visible, and can the user go back without losing data?
+
+### Sign-in & Payment Fields
+
+Verify:
+
+- Does the sign-up form use `autocomplete="new-password"` and the sign-in form `autocomplete="current-password"` with `autocomplete="username"`? This is how password managers tell the two apart.
+- Can the user **paste** into the password field? Blocking paste blocks password managers.
+- Is there a "show password" toggle that exposes its state with `aria-pressed`?
+- Do payment fields use `cc-name`, `cc-number`, `cc-exp`, `cc-csc`?
+- Does the pay button show the exact amount?
+- Is sensitive form data kept out of analytics events?
+
+### Names & Addresses
+
+Verify:
+
+- Is the name a single field? "First name" / "Last name" does not fit many of the world's names.
+- Are non-Latin characters, apostrophes, hyphens and spaces accepted in names?
+- Is the postal code optional when the form accepts international addresses? Not every country has one.
+- For multi-country addresses: is the street address a `<textarea>` with `autocomplete="street-address"`, instead of a rigid "street / number / flat" split?
+
+💡 TIP:
+
+- [React Hook Form](https://react-hook-form.com/) keeps native validation attributes working, see [Tools](#tools).
+- Test on a real phone: autofill, the on-screen keyboard and the zoom on focus do not show up in desktop DevTools.
+- Reference: [Modern Web Guidance - forms](https://github.com/GoogleChrome/modern-web-guidance), <https://web.dev/learn/forms>
 
 ---
 
