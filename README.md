@@ -85,9 +85,11 @@ If you're missing answers to questions like:
 - [Security](#security)
   * [OWASP Top 10](#owasp-top-10)
   * [Content Security Policy (CSP)](#content-security-policy-csp)
+  * [Security Headers](#security-headers)
   * [Analytics & Consent](#analytics--consent)
   * [HTTPS](#https)
   * [Authentication & Authorization](#authentication--authorization)
+  * [Cookies & Session](#cookies--session)
   * [Secrets Management](#secrets-management)
   * [Dependency Auditing](#dependency-auditing)
 - [Tests](#tests)
@@ -922,7 +924,14 @@ Verify:
 
 - Is a `Content-Security-Policy` header configured to restrict which resources (scripts, styles, images) can be loaded?
 - Is `script-src 'unsafe-inline'` avoided? Use nonces or hashes instead.
+- Is `script-src` based on a **nonce or a hash** plus `'strict-dynamic'`, not on a list of allowed domains?
+  - A domain allowlist (`https://cdn.example.com`, or `https:` alone) is easy to bypass: any script hosted on an allowed domain can run. With `'strict-dynamic'`, a script you trusted with a nonce may load its own dependencies and the host list stops mattering.
+- Are `object-src 'none'` and `base-uri 'none'` set? Without `base-uri`, an injected `<base>` tag redirects every relative script URL to the attacker's server.
 - Is `frame-ancestors` set to prevent clickjacking?
+  - Send `X-Frame-Options: DENY` (or `SAMEORIGIN`) next to it for older browsers.
+- Are violations reported? `Reporting-Endpoints` header plus the `report-to` directive, with `'report-sample'` in `script-src` so the report includes the offending snippet.
+- Is **Trusted Types** enforced (`require-trusted-types-for 'script'`)? It makes `innerHTML = userInput` throw instead of executing - DOM XSS becomes a runtime error.
+- Is untrusted text rendered with safe APIs (`textContent`, `createElement`, `setHTML()`), never with `innerHTML`, `outerHTML`, `document.write` or `eval`?
 - Does the allowlist cover **every** host the app talks to — analytics, error tracking, maps, fonts, auth popups — in the right directive?
   - Analytics usually needs two: `script-src` for the tag and `connect-src` for the beacons.
 - Is the policy re-checked whenever a third-party script is added? A strict CSP silently kills the newcomer, and the failure looks like "the integration does not work".
@@ -934,6 +943,29 @@ Verify:
 - Start with a report-only policy (`Content-Security-Policy-Report-Only`) to identify violations before enforcing
 - Use [helmet](https://www.npmjs.com/package/helmet) in Node.js to set security headers easily
 - Test your CSP at <https://csp-evaluator.withgoogle.com/>
+- If a script really must come from another origin, pin it: a versioned URL with Subresource Integrity (`integrity="sha384-..."` and `crossorigin="anonymous"`). A changed file then fails to load instead of running.
+
+### Security Headers
+
+CSP is one header out of several. The rest are one line each and cost nothing at runtime.
+
+Verify:
+
+- `X-Content-Type-Options: nosniff` on every response, with a correct `Content-Type`? Without it the browser may guess that an uploaded text file is a script.
+- `Referrer-Policy: strict-origin-when-cross-origin`? Full URLs - with tokens and search queries in them - should not leak to other sites.
+- `Permissions-Policy` turning off what the app does not use (`camera=(), microphone=(), geolocation=()`)? An injected script or an embedded iframe cannot then ask for them.
+- `Cross-Origin-Opener-Policy: same-origin` (or `same-origin-allow-popups` when you open OAuth popups)? It cuts the link between your window and a window opened by another site.
+- `Cross-Origin-Resource-Policy: same-origin` (or `same-site`) on responses that only your app should load?
+- Does the server check **Fetch Metadata** (`Sec-Fetch-Site`, `Sec-Fetch-Mode`, `Sec-Fetch-Dest`) and reject cross-site requests to endpoints that are never meant to be called from another site (403)?
+  - Remember `Vary: Sec-Fetch-Dest, Sec-Fetch-Mode, Sec-Fetch-Site`, so a cache does not serve one answer to both kinds of request.
+- CORS: does the server compare the `Origin` header against a list and return that exact origin? `Access-Control-Allow-Origin: *` together with `Access-Control-Allow-Credentials: true` is rejected by browsers, and echoing back any origin is worse - it works.
+- `postMessage`: does every `message` listener check `event.origin` against an allowlist, and does every `postMessage()` call name the target origin instead of `'*'`?
+
+💡 TIP:
+
+- Check the deployed site, not the config file: `curl -sI https://example.com`, [securityheaders.com](https://securityheaders.com/), [Mozilla HTTP Observatory](https://developer.mozilla.org/en-US/observatory).
+- [helmet](https://www.npmjs.com/package/helmet) sets most of these in Node.js. On static hosting they go into the host's config (`_headers`, `vercel.json`, the web server).
+- Reference: [Modern Web Guidance - security](https://github.com/GoogleChrome/modern-web-guidance), <https://web.dev/articles/fetch-metadata>
 
 ### Analytics & Consent
 
@@ -974,6 +1006,16 @@ Verify:
 
 - Consider using established providers: [Auth.js (NextAuth)](https://authjs.dev/), [Clerk](https://clerk.com/), [Auth0](https://auth0.com/)
 - Never implement your own cryptography — use well-tested libraries
+
+### Cookies & Session
+
+Verify:
+
+- Do session cookies have `Secure`, `HttpOnly` and `SameSite=Lax`?
+- Does the session cookie name start with `__Host-` (with `Path=/` and no `Domain`)? The browser then refuses to let a subdomain or a plain-HTTP page overwrite it. Use `__Secure-` when the cookie must be shared across subdomains.
+- Do cookies that must work inside a third-party iframe use `SameSite=None; Secure; Partitioned`? Without `Partitioned` browsers that block third-party cookies drop them.
+- Does logging out send `Clear-Site-Data: "cookies", "storage", "cache"`? Deleting one cookie leaves cached pages and `localStorage` behind on a shared computer.
+- Are tokens and personal data kept out of `localStorage` and `sessionStorage`? Any script on the page can read them.
 
 ### Secrets Management
 
