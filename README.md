@@ -28,6 +28,7 @@ If you're missing answers to questions like:
   * [Critical Path for Application Loading](#critical-path-for-application-loading)
   * [Images & Video](#images--video)
   * [Component Optimization](#component-optimization)
+  * [Native HTML First](#native-html-first)
   * [Loader](#loader)
   * [Test Navigation: "Back" Button in the Browser for SPA Applications](#test-navigation-back-button-in-the-browser-for-spa-applications)
   * [Client-side Storage](#client-side-storage)
@@ -128,6 +129,7 @@ If you're missing answers to questions like:
   * [Utilities](#utilities)
   * [HTTP Request](#http-request)
   * [Changelog](#changelog)
+  * [Modern Web Guidance](#modern-web-guidance)
 - [Developer Experience (DX)](#developer-experience-dx)
   * [EditorConfig](#editorconfig)
   * [Monorepo](#monorepo)
@@ -274,6 +276,26 @@ Verify:
 - Cancel HTTP requests if they are no longer needed for the component.
   - [Tech] AbortController
 
+### Native HTML First
+
+Before reaching for a component library, check whether the browser already ships the widget - with focus handling, keyboard support and accessibility included.
+
+Verify:
+
+- Modal dialogs: native `<dialog>` opened with `showModal()`, closed with `<form method="dialog">`? See [Keyboard Navigation](#keyboard-navigation).
+- Tooltips, menus and other non-modal overlays: the [Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) (`popover` + `popovertarget`)? It gives light dismiss, `Esc` and the top layer with no JavaScript and no `z-index` fights.
+- Expandable sections: `<details>` / `<summary>` instead of a hand-made accordion?
+- Search and filter controls wrapped in `<search>` instead of `<div role="search">`?
+- When a drawer or a custom overlay is open, is the rest of the page marked `inert`?
+- Does the viewport meta tag allow zooming? `user-scalable=no` and `maximum-scale=1` lock out users who need to enlarge the page.
+- Are event handlers attached with `addEventListener()`, not `onclick="..."` attributes? Inline handlers also force `'unsafe-inline'` into the CSP.
+- Are runtime values passed to CSS through custom properties (`el.style.setProperty('--progress', value)`) instead of writing visual styles inline?
+
+💡 TIP:
+
+- Check support before relying on a newer feature: [Baseline](https://web.dev/baseline) "Widely available" means it has worked in all major browsers for 30 months.
+- Reference: [Modern Web Guidance - html](https://github.com/GoogleChrome/modern-web-guidance)
+
 ### Loader
 
 Verify:
@@ -338,10 +360,15 @@ Verify:
 - Do images, logos, charts, embeds and code highlighting adapt? A transparent PNG logo with dark lettering disappears on a dark background.
 - Does `<meta name="theme-color">` have a value for each scheme (`media="(prefers-color-scheme: dark)"`), so the mobile browser bar matches the page?
 - When "system" is selected, does the page react live to the OS switching at sunset, without a reload?
+- If a section forces its own scheme (a dark footer on a light page, `color-scheme: dark`), are the `light-dark()` tokens **re-declared on that element**?
+  - A custom property holding `light-dark()` is resolved where it is declared, and children inherit the already-computed color - so the dark section keeps the light values unless it assigns the tokens again.
+- Do custom scrollbar colors (`scrollbar-color`) come from theme tokens, with `::-webkit-scrollbar` rules kept only inside `@supports not (scrollbar-color: auto)`?
 
 💡 TIP:
 
 - [`light-dark()`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/color_value/light-dark) keeps both values in one declaration - `color: light-dark(#111, #eee)` - instead of duplicating every rule inside a media query.
+  - It is Baseline since 2024. If older browsers matter, set the tokens in a `prefers-color-scheme` media query first and override them inside `@supports (color: light-dark(#000, #fff))`.
+  - Do not register such tokens with `@property` - a registered custom property is computed at declaration and stops following the scheme.
 - Test without touching the OS setting: DevTools → Rendering → "Emulate CSS media feature `prefers-color-scheme`", or Playwright's `colorScheme: 'dark'`.
 - Run the automated accessibility checks once per theme - a contrast bug in the dark theme is invisible to a run that only loads the light one.
 
@@ -503,6 +530,9 @@ Verify:
 - Is there a visible focus indicator (outline) on focused elements?
 - Are keyboard traps avoided (user can always Tab away from an element)?
 - Is a "Skip to main content" link provided for long navigation menus?
+- Is the code free of positive `tabindex` values (`tabindex="1"` and up)? They pull the element out of the natural order and break it for everything else. Only `0` and `-1` are safe.
+- Are click and touch targets at least **24×24 px** (WCAG 2.2, 2.5.8)? Aim for 48 px on controls that are used with a thumb.
+- Is `touch-action: none` avoided on scrollable areas? Use `pan-x` / `pan-y` so the other axis still scrolls.
 - Are custom controls built on hidden inputs still focusable?
   - A `<label for>` pointing at an `<input hidden>` is **unreachable by keyboard** — `hidden` removes the element from the tab order. Use a visually-hidden class (`.sr-only`) or a real `<button>` that forwards the click.
 - Does every focusable control have a visible focus ring — including `<select>`, color inputs and buttons styled with `border: none`?
@@ -526,6 +556,14 @@ Verify:
   - Check that `aria-hidden` is not left on an element you later reveal — it silences content that is visually shown.
 - Do icon-only controls have an accessible name, not just a `title`?
   - `title` is ignored by most mobile screen readers and unreachable by keyboard. Pair it with `aria-label`.
+- Is ARIA that only repeats the HTML removed? `<nav role="navigation">` and `<input required aria-required="true">` add noise, and a wrong role is worse than none.
+- Is `aria-hidden="true"` kept off focusable elements and their ancestors? The user can still tab into something the screen reader says does not exist.
+- When several controls look the same ("Edit", "Delete" in every row), does each have a distinct accessible name?
+- Does every inline `<svg>` have either `aria-hidden="true"` (decorative) or `role="img"` with a `<title>` (informative)?
+- Does every `<iframe>` have a `title` describing its content?
+- Do data tables have a `<caption>` and `<th scope="col">` / `<th scope="row">`? And is `<table>` never used for layout?
+- Do videos with speech have captions (`<track kind="captions">`)?
+- Does the layout survive the user's settings: a larger default font size (sizes in `rem`, not `px`), `prefers-reduced-motion` and `forced-colors`?
 
 ### Color Contrast
 
@@ -1525,7 +1563,24 @@ TypeScript plugins:
 
 ### Utilities
 
-- [Lodash](https://lodash.com/) - the best is version "lodash-es" because it supports Tree Shaking
+Check the language first - most of what utility libraries were installed for is now built in:
+
+| Instead of                                                  | Use                                                          |
+| ----------------------------------------------------------- | ------------------------------------------------------------ |
+| `JSON.parse(JSON.stringify(x))`, `_.cloneDeep`              | `structuredClone(x)`                                         |
+| `[...arr].sort()`, `arr.slice().reverse()`                  | `arr.toSorted()`, `arr.toReversed()`, `arr.toSpliced()`      |
+| copying an array to change one item                         | `arr.with(index, value)`                                     |
+| reversing a copy to search from the end                     | `arr.findLast()`, `arr.findLastIndex()`                      |
+| `_.groupBy`, a `reduce()` building buckets                  | `Object.groupBy()`, `Map.groupBy()`                          |
+| `obj.hasOwnProperty(key)`                                   | `Object.hasOwn(obj, key)`                                    |
+| `let resolve, reject` assigned inside `new Promise()`       | `Promise.withResolvers()`                                    |
+| `AbortController` + `setTimeout(() => controller.abort())`  | `AbortSignal.timeout(ms)`, combined with `AbortSignal.any()` |
+| `new Error('Failed: ' + err.message)`                       | `new Error('Failed', { cause: err })`                        |
+| splitting a query string on `&` and `=`                     | `URLSearchParams`                                            |
+| `el.innerHTML = ''`                                         | `el.replaceChildren()`                                       |
+
+- [Lodash](https://lodash.com/) - only for what is still missing natively (`debounce`, `throttle`, deep `merge`). Use "lodash-es", because it supports Tree Shaking, and import single functions.
+- Reference: [Modern Web Guidance - js](https://github.com/GoogleChrome/modern-web-guidance)
 
 ### HTTP Request
 
@@ -1537,6 +1592,14 @@ TypeScript plugins:
 
 - [changelog-all-possibilities](https://github.com/piecioshka/changelog-all-possibilities)
 - [🇵🇱 Blogpost: husky-commitlint-git-changelog](https://piecioshka.pl/blog/2019/03/23/husky-commitlint-git-changelog.html)
+
+### Modern Web Guidance
+
+[Modern Web Guidance](https://github.com/GoogleChrome/modern-web-guidance) is a set of guides for coding agents, maintained by the Chrome, Edge, Firefox and MDN teams. Agents tend to write the web of a few years ago, because that is what most of their training data looks like - the guides steer them to current platform features.
+
+- Scan a codebase for legacy patterns: `npx modern-web-guidance@latest legacy-scan .`
+- Find a guide for a task: `npx modern-web-guidance@latest search "animate a dialog backdrop"`
+- Install it as a skill for your coding agent: `npx modern-web-guidance@latest install`
 
 ---
 
