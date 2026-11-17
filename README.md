@@ -92,6 +92,11 @@ If you're missing answers to questions like:
   * [Cookies & Session](#cookies--session)
   * [Secrets Management](#secrets-management)
   * [Dependency Auditing](#dependency-auditing)
+- [Privacy](#privacy)
+  * [Data Minimization](#data-minimization)
+  * [Permissions](#permissions)
+  * [Third-party Embeds](#third-party-embeds)
+  * [User Data Control](#user-data-control)
 - [Tests](#tests)
   * [Offline Connection Tests](#offline-connection-tests)
   * [Performance Tests](#performance-tests)
@@ -1045,6 +1050,57 @@ Verify:
   - `npm audit` — built-in, zero setup
   - [Snyk](https://snyk.io/) — continuous monitoring with PR fixes
   - [Socket](https://socket.dev/) — detects supply chain attacks (typosquatting, install scripts)
+
+---
+
+## Privacy
+
+The legal minimum (policy, banner, account deletion) is in [What Every Modern Website Needs](#what-every-modern-website-needs), and tracking consent in [Analytics & Consent](#analytics--consent). This section is about the product itself: collect less, ask later, load fewer strangers.
+
+### Data Minimization
+
+Verify:
+
+- Is every field you ask for actually used? Data you never collected cannot leak.
+- Do you ask at the lowest precision that does the job - an age range instead of a date of birth, a city instead of a street address?
+- Can the main flow be completed **without an account** (guest checkout, try before sign-up)?
+- Is there a short explanation next to each optional or sensitive field saying why you ask (linked with `aria-describedby`)?
+- Are e-mails, phone numbers and tokens masked before they reach logs, error tracking and analytics payloads?
+  - Check the URLs too: a reset token in a query string ends up in every log line and in the `Referer` header.
+
+### Permissions
+
+Verify:
+
+- Is the browser permission prompt (location, camera, notifications) shown only **after** the user clicked something that needs it, with a sentence explaining why?
+  - A prompt on page load gets "Block", and a blocked permission cannot be asked for again.
+- Does the feature still work, in a reduced form, when the user says no?
+- Are browser features detected directly (`'share' in navigator`) or through User-Agent Client Hints, not by parsing the `navigator.userAgent` string?
+- Is the app free of fingerprinting - reading canvas pixels, the WebGL renderer or the font list to recognize a returning visitor?
+
+### Third-party Embeds
+
+Verify:
+
+- Are heavy embeds (video players, maps, chat widgets, social posts) loaded **only after a click**?
+  - Render a static placeholder - a thumbnail with a play button - and mount the `<iframe>` on interaction. Before the click the third party gets no request, sets no cookie, and the page loads faster.
+- Is the embed's privacy mode switched on where one exists (`youtube-nocookie.com`, Vimeo `dnt=1`)?
+- Are share buttons and "follow us" links plain `<a href>` links instead of the vendor's SDK? The SDK tracks every visitor, the link only the one who clicks.
+- Does federated sign-in ("Sign in with ...") use the [Federated Credential Management API](https://developer.mozilla.org/en-US/docs/Web/API/FedCM_API) where the provider supports it, instead of third-party cookies and redirects?
+
+### User Data Control
+
+Verify:
+
+- Can the user **export** and **delete** their data on their own, from the settings, without writing to support?
+- Does logging out really clear the device? See [Cookies & Session](#cookies--session).
+- Does the privacy policy list every third party from this section?
+
+💡 TIP:
+
+- Verify with the network tab in a fresh private window: before any interaction there should be no request to a host you do not own.
+- Facade components: [lite-youtube-embed](https://github.com/paulirish/lite-youtube-embed), [lite-vimeo-embed](https://github.com/luwes/lite-vimeo-embed).
+- Reference: [Modern Web Guidance - privacy](https://github.com/GoogleChrome/modern-web-guidance), <https://web.dev/learn/privacy>
 
 ---
 
