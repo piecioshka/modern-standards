@@ -97,6 +97,7 @@ If you're missing answers to questions like:
 - [Privacy](#privacy)
   * [Data Minimization](#data-minimization)
   * [Permissions](#permissions)
+  * [Notifications](#notifications)
   * [Third-party Embeds](#third-party-embeds)
   * [User Data Control](#user-data-control)
 - [Tests](#tests)
@@ -162,6 +163,7 @@ And the technical baseline. Each item links to its detailed checklist below:
 
 - **Dark & light mode** - follows the system setting, with a manual switch. See [Dark & Light Mode](#dark--light-mode).
 - **Favicon + a dedicated Apple icon** - a raster favicon for browsers and Google, and `apple-touch-icon.png` for Apple devices. See [Favicons](#favicons).
+- **Its own app icon** - one mark used as the favicon, in the top bar before the app name, and in every notification the app shows. See [Favicons](#favicons) and [Notifications](#notifications).
 - **Search under `Cmd+K` / `Ctrl+K`** - only if the site needs a search at all. See [Search & Command Palette](#search--command-palette).
 - **Open Graph** - so a shared link shows a title, a description and an image. See [Meta Tags](#meta-tags).
 - **JSON-LD** - tells search engines what the page is about. See [Structured Data](#structured-data).
@@ -623,6 +625,8 @@ Verify:
 
 Verify:
 
+- Does the app have its **own** icon, never the framework's default (Vite, Next, Astro)?
+  - Is that same icon the favicon **and** shown in the top bar right before the app name? One mark everywhere, so the tab, the header and the notifications are recognizably the same app.
 - Is there a `.ico` or `.png` favicon — not only an SVG?
   - **Google Search does not display SVG favicons.** A site with only `favicon.svg` shows the default globe icon in search results.
 - Does `/favicon.ico` exist at the site root? Browsers and crawlers request it even when you never declare it.
@@ -1153,6 +1157,19 @@ Verify:
 - Does the feature still work, in a reduced form, when the user says no?
 - Are browser features detected directly (`'share' in navigator`) or through User-Agent Client Hints, not by parsing the `navigator.userAgent` string?
 - Is the app free of fingerprinting - reading canvas pixels, the WebGL renderer or the font list to recognize a returning visitor?
+
+### Notifications
+
+Applies to a plain web page in a browser tab, not to an installed PWA or a desktop app - those are a different kind of app with their own rules.
+
+Verify:
+
+- Does every notification the app triggers (`new Notification()`, `registration.showNotification()`) pass the app icon in `icon`, so the user sees the app's logo instead of only the browser's?
+  - Is it a PNG (192×192 is enough), not an SVG? Notification icons are decoded outside the page and SVG support differs between browsers and systems.
+  - Is the URL absolute or root-relative (`/notification-icon.png`) and served without auth? The browser fetches it on its own.
+- Is `badge` set too, when the app also runs on Android? It is the small monochrome mark in the status bar; without it Android shows a generic bell.
+
+⚠️ NOTE: on macOS the large icon on the left of a banner always belongs to the sending application, so for a page in a tab it stays the Chrome (or Safari, Firefox) logo, and a web page cannot change it. The `icon` image shows as a thumbnail on the right side of the banner. On Windows and Linux it is the main image of the notification.
 
 ### Third-party Embeds
 
