@@ -1168,23 +1168,26 @@ Verify:
   - Is it a PNG (192×192 is enough), not an SVG? Notification icons are decoded outside the page and SVG support differs between browsers and systems.
   - Is the URL absolute or root-relative (`/notification-icon.png`) and served without auth? The browser fetches it on its own.
 - Is `badge` set too, when the app also runs on Android? It is the small monochrome mark in the status bar; without it Android shows a generic bell.
-- Is there **one switch for notifications in the top bar**, as an icon button, so the user can mute and unmute them from any page?
-  - A `<button>` with `aria-pressed`, showing a bell when on and a crossed-out bell when off (`bell` / `bell-off` from lucide), with no visible text.
-  - `aria-label` and `title` say what a click does: "Turn off notifications" when on, "Turn on notifications" when off.
-  - Turning it on asks for the permission (`Notification.requestPermission()`) when it was never asked; the click is the user gesture the browser requires.
-  - When the browser blocks notifications (`Notification.permission === "denied"`) or has no Notification API, the button gets `aria-disabled="true"` and a label that says so ("Notifications are blocked in the browser settings"); the page cannot ask again.
+- Is there **a bell in the top bar that links to the notifications page**, on every page?
+  - An `<a href="/notifications">` styled as an icon button, with no visible text. It shows a bell when notifications are on and a crossed-out bell when they are off or blocked (`bell` / `bell-off` from lucide), so the state is visible at a glance.
+  - `aria-label` and `title` name the page and the state: "Notifications (on)", "Notifications (off)", "Notifications (blocked in the browser settings)".
   - It sits with the other icon buttons, before the language, theme and repository buttons.
+- Is there **one notifications page** (`/notifications`) that holds every kind of notification the app has, each with its own switch?
+  - Browser notifications, sounds, muted sources, and whatever the server sends (phone, e-mail, webhooks), each as a row with a name, a one-line hint and a `<button aria-pressed>` switch.
+  - The browser switch asks for the permission (`Notification.requestPermission()`) when it is turned on and was never asked; the click is the user gesture the browser requires.
+  - When the browser blocks notifications (`Notification.permission === "denied"`) or has no Notification API, that switch is disabled and its hint says so; the page cannot ask again.
+  - Defaults for server-side notifications are changed here, not in `.env`; the server keeps them in a file, so restarts keep them.
+  - Choices kept in `localStorage` follow other tabs through the `storage` event, so the bell and the page never disagree.
 
 ```html
-<button
-  type="button"
+<a
+  href="/notifications"
   class="icon-button"
-  aria-pressed="true"
-  aria-label="Turn off notifications"
-  title="Turn off notifications"
+  aria-label="Notifications (on)"
+  title="Notifications (on)"
 >
   <svg class="icon icon--bell" aria-hidden="true"><!-- lucide bell --></svg>
-</button>
+</a>
 ```
 
 ⚠️ NOTE: on macOS the large icon on the left of a banner always belongs to the sending application, so for a page in a tab it stays the Chrome (or Safari, Firefox) logo, and a web page cannot change it. The `icon` image shows as a thumbnail on the right side of the banner. On Windows and Linux it is the main image of the notification.
