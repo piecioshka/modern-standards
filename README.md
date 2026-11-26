@@ -1178,6 +1178,13 @@ Verify:
   - When the browser blocks notifications (`Notification.permission === "denied"`) or has no Notification API, that switch is disabled and its hint says so; the page cannot ask again.
   - Defaults for server-side notifications are changed here, not in `.env`; the server keeps them in a file, so restarts keep them.
   - Choices kept in `localStorage` follow other tabs through the `storage` event, so the bell and the page never disagree.
+- Are **`/notifications` and `/alerts` kept apart**, when the app also shows what it has sent?
+  - `/notifications` is settings only: every switch, rule and setup step that decides **what** notifies and **how** (channels, sounds, quiet hours, thresholds, alert rules, the phone setup). It holds no history.
+  - `/alerts` is the log only: every notification that fired or was sent, newest first, with its time, kind and outcome (sent, duplicate, switched off, error). It is read-only apart from filtering, marking as read and clearing, and it holds no switches.
+  - Each page links to the other in its first lines ("the switches are on Notifications", "what was sent is on Alerts"), and neither repeats the other's content.
+  - The bell in the top bar leads to `/notifications`; `/alerts` is a regular navigation link with a text label (and an unread count, if the app has one), never a second bell.
+  - A switch that pauses notifications sits on `/notifications`, not in the top bar, a sidebar or the page the notification is about; those places only link there.
+  - A new kind of notification gets its switch on `/notifications` and goes out through the one sending path that writes the log, so it shows up on `/alerts` without extra work.
 
 ```html
 <a
